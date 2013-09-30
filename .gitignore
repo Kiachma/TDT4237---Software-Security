@@ -1,6 +1,7 @@
 # Directories #
 /build/
 /bin/
+
 target/
 # OS Files #
 .DS_Store
@@ -53,3 +54,10 @@ local.properties
 .cproject
 # PDT-specific
 .buildpath
+/nbproject/private/
+
+###################
+## Netbeans
+############
+/nbproject/
+build.xml
