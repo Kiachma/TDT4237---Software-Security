@@ -1,7 +1,5 @@
 package amu.action;
 
-import amu.database.CustomerDAO;
-import amu.model.Customer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,49 +7,90 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
+import amu.Config;
+import amu.database.CustomerDAO;
+import amu.model.Customer;
+
 class LoginCustomerAction implements Action {
 
-    @Override
-    public ActionResponse execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@Override
+	public ActionResponse execute(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
-        Map<String, String> values = new HashMap<String, String>();
-        request.setAttribute("values", values);
-        if (ActionFactory.hasKey(request.getParameter("from"))) {
-            values.put("from", request.getParameter("from"));
-        }
+		Map<String, String> values = new HashMap<String, String>();
 
-        if (request.getMethod().equals("POST")) {
+		request.setAttribute("values", values);
+		if (ActionFactory.hasKey(request.getParameter("from"))) {
+			values.put("from", request.getParameter("from"));
+		}
 
-            Map<String, String> messages = new HashMap<String, String>();
-            request.setAttribute("messages", messages);
+		if (request.getMethod().equals("POST")) {
+			return authenticateUser(request, values);
+		}
 
-            CustomerDAO customerDAO = new CustomerDAO();
-            Customer customer = customerDAO.findByEmail(request.getParameter("email"));
+		return new ActionResponse(ActionResponseType.FORWARD, "loginCustomer");
+	}
 
-            if (customer != null) {
-                values.put("email", request.getParameter("email"));
+	private ActionResponse authenticateUser(HttpServletRequest request,
+			Map<String, String> values) {
+		HttpSession session = request.getSession(true);
+		String email = request.getParameter("email");
+		String passwd = request.getParameter("password");
 
-                if (customer.getActivationToken() == null) {
-                    if (customer.getPassword().equals(CustomerDAO.hashPassword(request.getParameter("password")))) {
-                        HttpSession session = request.getSession(true);
-                        session.setAttribute("customer", customer);
-                        if (ActionFactory.hasKey(request.getParameter("from"))) {
-                            return new ActionResponse(ActionResponseType.REDIRECT, request.getParameter("from"));
-                        }
-                    } else { // Wrong password
-                        messages.put("password", "Password was incorrect.");
-                    }
-                } else { // customer.getActivationToken() != null
-                    return new ActionResponse(ActionResponseType.REDIRECT, "activateCustomer");
-                }
-            } else { // findByEmail returned null -> no customer with that email exists
-                messages.put("email", "Email was incorrect.");
-            }
+		Map<String, String> messages = new HashMap<String, String>();
+		request.setAttribute("messages", messages);
+		Integer count = (Integer) session.getAttribute("loginCount");
+		count=count== null ? 1 : count;
+		session.setAttribute("loginCount", count+1);
+		
+		if (count>=3 && !validateCaptcha(request)) {
+			messages.put("email", "Wrong captcha.");
+			return new ActionResponse(ActionResponseType.FORWARD,
+					"loginCustomer");
+		}
 
-            // Forward to login form with error messages
-            return new ActionResponse(ActionResponseType.FORWARD, "loginCustomer");
-        }
+		CustomerDAO customerDAO = new CustomerDAO();
+		Customer customer = customerDAO.findByEmail(request
+				.getParameter("email"));
 
-        return new ActionResponse(ActionResponseType.FORWARD, "loginCustomer");
-    }
+		if (customer != null) {
+			if (customer.getActivationToken() == null) {
+				if (checkPasswd(passwd, customer)) {
+					session.setAttribute("loginCount",0);
+					session.setAttribute("customer", customer);
+					if (ActionFactory.hasKey(request.getParameter("from"))) {
+						return new ActionResponse(ActionResponseType.REDIRECT,
+								request.getParameter("from"));
+					}
+				}
+			} else { // customer.getActivationToken() != null
+				return new ActionResponse(ActionResponseType.REDIRECT,
+						"activateCustomer");
+			}
+		}
+		messages.put("email", "Incorrect login details.");
+
+		// Forward to login form with error messages
+		return new ActionResponse(ActionResponseType.FORWARD, "loginCustomer");
+	}
+
+	private boolean validateCaptcha(HttpServletRequest request) {
+
+		String remoteAddr = request.getRemoteAddr();
+		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+		reCaptcha.setPrivateKey(Config.RECAPTCHA_PRIVATE_KEY);
+
+		String challenge = request.getParameter("recaptcha_challenge_field");
+		String uresponse = request.getParameter("recaptcha_response_field");
+		ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
+				challenge, uresponse);
+
+		return reCaptchaResponse.isValid();
+	}
+
+	private boolean checkPasswd(String passwd, Customer customer) {
+		return customer.getPassword().equals(CustomerDAO.hashPassword(passwd));
+	}
 }
