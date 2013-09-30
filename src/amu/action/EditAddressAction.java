@@ -24,7 +24,11 @@ class EditAddressAction implements Action {
 
         AddressDAO addressDAO = new AddressDAO();
         Address address = addressDAO.read(Integer.parseInt(request.getParameter("id")));
-
+        
+        if(address.getCustomer().getId()!=customer.getId()){
+        	 return new ActionResponse(ActionResponseType.REDIRECT, "viewCustomer");
+        }
+        
         if (request.getMethod().equals("POST")) {
             List<String> messages = new ArrayList<String>();
             request.setAttribute("messages", messages);
