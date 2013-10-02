@@ -1,3 +1,6 @@
+<%@ page import="net.tanesha.recaptcha.ReCaptcha"%>
+<%@ page import="net.tanesha.recaptcha.ReCaptchaFactory"%>
+<%@ page import="amu.Config"%>
 <div class="container">
     <h1>Register</h1>
     <c:choose>
@@ -29,6 +32,17 @@
                                     <td><label for="password">Password</label></td>
                                     <td><input id="password" name="password" type="text" autocomplete="off" /></td>
                                 </tr>
+                                <tr>
+                                	<td>Prove your humanity</td>
+									<td>
+										<%
+											ReCaptcha c = ReCaptchaFactory.newReCaptcha(
+																Config.RECAPTCHA_PUBLIC_KEY,
+																Config.RECAPTCHA_PRIVATE_KEY, false);
+														out.print(c.createRecaptchaHtml(null, null));
+										%>
+									</td>
+								</tr>
                             </table>
                             <div><input type="submit" value="Submit"></div>
                         </form>

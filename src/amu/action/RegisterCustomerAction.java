@@ -1,12 +1,14 @@
 package amu.action;
 
+import amu.Config;
 import amu.Mailer;
 import amu.database.CustomerDAO;
 import amu.model.Customer;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
 
 class RegisterCustomerAction implements Action {
     
@@ -16,6 +18,10 @@ class RegisterCustomerAction implements Action {
         if (request.getMethod().equals("POST")) {
             CustomerDAO customerDAO = new CustomerDAO();
             Customer customer = customerDAO.findByEmail(request.getParameter("email"));
+            
+            if (!validateCaptcha(request)) {
+            	return new ActionResponse(ActionResponseType.REDIRECT, "registrationError");
+    		}
 
             if (customer == null) {
                 customer = new Customer();
@@ -47,4 +53,21 @@ class RegisterCustomerAction implements Action {
         // Else we show the register form
         return new ActionResponse(ActionResponseType.FORWARD, "registerCustomer");
     }
+    
+    private boolean validateCaptcha(HttpServletRequest request) {
+
+		String remoteAddr = request.getRemoteAddr();
+		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+		reCaptcha.setPrivateKey(Config.RECAPTCHA_PRIVATE_KEY);
+
+		String challenge = request.getParameter("recaptcha_challenge_field");
+		String uresponse = request.getParameter("recaptcha_response_field");
+                if(challenge!=null && uresponse!=null){
+                    ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
+                                    challenge, uresponse);
+                    return reCaptchaResponse.isValid();
+                }
+                
+        return false;
+	}
 }
