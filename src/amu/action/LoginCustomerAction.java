@@ -84,7 +84,7 @@ class LoginCustomerAction implements Action {
 
 		String challenge = request.getParameter("recaptcha_challenge_field");
 		String uresponse = request.getParameter("recaptcha_response_field");
-                if(challenge==null || uresponse==null){
+                if(challenge!=null && uresponse!=null){
                     ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
                                     challenge, uresponse);
                     return reCaptchaResponse.isValid();
