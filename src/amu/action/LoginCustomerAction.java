@@ -84,10 +84,13 @@ class LoginCustomerAction implements Action {
 
 		String challenge = request.getParameter("recaptcha_challenge_field");
 		String uresponse = request.getParameter("recaptcha_response_field");
-		ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
-				challenge, uresponse);
-
-		return reCaptchaResponse.isValid();
+                if(challenge==null || uresponse==null){
+                    ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
+                                    challenge, uresponse);
+                    return reCaptchaResponse.isValid();
+                }
+                
+            return false;
 	}
 
 	private boolean checkPasswd(String passwd, Customer customer) {
