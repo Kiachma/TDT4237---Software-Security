@@ -14,6 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CreditCardDAO {
+    
+    private CustomerDAO customerDAO;
 
     public List<CreditCard> browse(Customer customer) {
         List<CreditCard> creditCards = new ArrayList<CreditCard>();
@@ -52,6 +54,7 @@ public class CreditCardDAO {
     }
 
     public CreditCard read(int id) {
+        customerDAO = new CustomerDAO();
         CreditCard creditCard = null;
 
         Connection connection = null;
@@ -61,19 +64,20 @@ public class CreditCardDAO {
         try {
             connection = Database.getConnection();
 
-            String query = "SELECT cc_number, expiry_date, cardholder_name FROM credit_card WHERE id=?";
+            String query = "SELECT * FROM credit_card WHERE id=?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, id);
 
             resultSet = statement.executeQuery();
-
+            
             if (resultSet.next()) {
+                Customer customer = customerDAO.findById(resultSet.getInt("customer_id"));
                                 Calendar expiryDate = Calendar.getInstance();
                 expiryDate.setTime(resultSet.getDate("expiry_date"));
                 
                 creditCard = new CreditCard(
                         id, 
-                        null,
+                        customer,
                         resultSet.getString("cc_number"), 
                         expiryDate, 
                         resultSet.getString("cardholder_name")); 
