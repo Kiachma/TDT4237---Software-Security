@@ -49,7 +49,7 @@ class SelectPaymentOptionAction implements Action {
 
             CreditCard creditCard = creditCardDAO.read(Integer.parseInt(request.getParameter("creditCardID")));
 
-            if (creditCard.getCustomer().getId() != customer.getId()) {
+            if (creditCard==null || creditCard.getCustomer().getId() != customer.getId()) {
                 messages.put("Id", "That card does not belong to you");
                 return new ActionResponse(ActionResponseType.REDIRECT, "selectPaymentOption");
             }
