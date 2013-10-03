@@ -24,9 +24,15 @@ class SelectPaymentOptionAction implements Action {
         Cart cart = (Cart) session.getAttribute("cart");
         Customer customer = (Customer) session.getAttribute("customer");
 
+        CreditCardDAO creditCardDAO = new CreditCardDAO();
+        List<CreditCard> creditCards = creditCardDAO.browse(customer);
+        
+        request.setAttribute("creditCards", creditCards);
+        
         if (cart == null) {
             return new ActionResponse(ActionResponseType.REDIRECT, "viewCart");
         }
+        
 
         if (customer == null) {
             ActionResponse actionResponse = new ActionResponse(ActionResponseType.REDIRECT, "loginCustomer");
@@ -37,8 +43,7 @@ class SelectPaymentOptionAction implements Action {
         if (cart.getShippingAddress() == null) {
             return new ActionResponse(ActionResponseType.REDIRECT, "selectShippingAddress");
         }
-
-        CreditCardDAO creditCardDAO = new CreditCardDAO();
+      
         request.setAttribute("messages", messages);
         // Handle credit card selection submission
         if (request.getMethod().equals("POST")) {
@@ -46,20 +51,21 @@ class SelectPaymentOptionAction implements Action {
                 messages.put("Id", "Please choose a card");
                 return new ActionResponse(ActionResponseType.REDIRECT, "selectPaymentOption");
             }
+            CreditCard creditCard =null;
+            for(CreditCard cc : creditCards){
+                if(cc.getId()==Integer.parseInt(request.getParameter("creditCardID"))){
+                    creditCard=cc;
+                }
+            }
 
-            CreditCard creditCard = creditCardDAO.read(Integer.parseInt(request.getParameter("creditCardID")));
-
-            if (creditCard==null || creditCard.getCustomer().getId() != customer.getId()) {
-                messages.put("Id", "That card does not belong to you");
+            if (creditCard==null) {
+                messages.put("Id", "Please choose a valid card");
                 return new ActionResponse(ActionResponseType.REDIRECT, "selectPaymentOption");
             }
             cart.setCreditCard(creditCard);
 
             return new ActionResponse(ActionResponseType.REDIRECT, "reviewOrder");
         }
-
-        List<CreditCard> creditCards = creditCardDAO.browse(customer);
-        request.setAttribute("creditCards", creditCards);
 
         // Else GET request
         return new ActionResponse(ActionResponseType.FORWARD, "selectPaymentOption");
