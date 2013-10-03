@@ -1,5 +1,6 @@
 package amu.action;
 
+import amu.Authentication;
 import amu.database.AddressDAO;
 import amu.database.CreditCardDAO;
 import amu.model.Address;
@@ -9,6 +10,8 @@ import amu.model.Customer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,13 +29,13 @@ class SelectPaymentOptionAction implements Action {
 
         CreditCardDAO creditCardDAO = new CreditCardDAO();
         List<CreditCard> creditCards = creditCardDAO.browse(customer);
-        
+
         request.setAttribute("creditCards", creditCards);
-        
+
         if (cart == null) {
             return new ActionResponse(ActionResponseType.REDIRECT, "viewCart");
         }
-        
+
 
         if (customer == null) {
             ActionResponse actionResponse = new ActionResponse(ActionResponseType.REDIRECT, "loginCustomer");
@@ -43,7 +46,7 @@ class SelectPaymentOptionAction implements Action {
         if (cart.getShippingAddress() == null) {
             return new ActionResponse(ActionResponseType.REDIRECT, "selectShippingAddress");
         }
-      
+
         request.setAttribute("messages", messages);
         // Handle credit card selection submission
         if (request.getMethod().equals("POST")) {
@@ -51,15 +54,17 @@ class SelectPaymentOptionAction implements Action {
                 messages.put("Id", "Please choose a card");
                 return new ActionResponse(ActionResponseType.REDIRECT, "selectPaymentOption");
             }
-            CreditCard creditCard =null;
-            for(CreditCard cc : creditCards){
-                if(cc.getId()==Integer.parseInt(request.getParameter("creditCardID"))){
-                    creditCard=cc;
+            CreditCard creditCard = null;
+            for (CreditCard cc : creditCards) {
+                if (cc.getId() == Integer.parseInt(request.getParameter("creditCardID"))) {
+                    creditCard = cc;
                 }
             }
 
-            if (creditCard==null) {
+            if (creditCard == null) {
                 messages.put("Id", "Please choose a valid card");
+                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Customer (" + customer.getId() + ") tried to use an invalid credit card");
+                Authentication.logOutCustomer(session, customer);
                 return new ActionResponse(ActionResponseType.REDIRECT, "selectPaymentOption");
             }
             cart.setCreditCard(creditCard);
