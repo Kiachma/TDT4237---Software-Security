@@ -59,3 +59,7 @@ textarea{
     font-family: sans-serif;
     float:right;
 }
+
+.error{
+    color: red
+}
