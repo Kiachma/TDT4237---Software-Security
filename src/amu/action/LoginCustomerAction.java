@@ -1,5 +1,6 @@
 package amu.action;
 
+import amu.Authentication;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,6 +95,6 @@ class LoginCustomerAction implements Action {
 	}
 
 	private boolean checkPasswd(String passwd, Customer customer) {
-		return customer.getPassword().equals(CustomerDAO.hashPassword(passwd));
+		return customer.getPassword().equals(Authentication.hashPassword(passwd));
 	}
 }

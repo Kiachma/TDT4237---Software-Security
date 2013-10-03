@@ -13,18 +13,6 @@ import javax.xml.bind.DatatypeConverter;
 
 public class CustomerDAO {
 
-    public static String hashPassword(String plainTextPassword) {
-        String hashedPassword = null;
-        try {
-            // Calculate SHA1(password+salt)
-            hashedPassword = DatatypeConverter.printHexBinary(MessageDigest.getInstance("SHA1").digest((plainTextPassword + Config.SALT).getBytes()));
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return hashedPassword;
-    }
-
     public static String generateActivationCode() {
         SecureRandom random = new SecureRandom();
         byte bytes[] = new byte[8];
