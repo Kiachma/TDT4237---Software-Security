@@ -45,7 +45,7 @@ class DeleteCreditCardAction implements Action {
             request.setAttribute("creditCard", creditCard);
             return new ActionResponse(ActionResponseType.FORWARD, "deleteCreditCard");
         } else {
-            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Customer ("+customer.getId()+") tried to use an invalid credit card");
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Customer ("+customer.getId()+") tried to delete an invalid credit card");
             Authentication.logOutCustomer(session, customer);
             return new ActionResponse(ActionResponseType.REDIRECT, "viewCustomer");
         }
