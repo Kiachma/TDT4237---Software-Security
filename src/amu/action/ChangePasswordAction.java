@@ -1,5 +1,6 @@
 package amu.action;
 
+import amu.Authentication;
 import amu.database.CustomerDAO;
 import amu.model.Customer;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ class ChangePasswordAction implements Action {
 
             // Validation OK, do business logic
             CustomerDAO customerDAO = new CustomerDAO();
-            customer.setPassword(CustomerDAO.hashPassword(password[0]));
+            customer.setPassword(Authentication.hashPassword(password[0]));
             if (customerDAO.edit(customer) == false) {
                 messages.add("An error occured.");
                 return new ActionResponse(ActionResponseType.FORWARD, "changePassword");
