@@ -1,5 +1,6 @@
 package amu.action;
 
+import amu.Authentication;
 import amu.Config;
 import amu.Mailer;
 import amu.Utils;
@@ -97,7 +98,7 @@ class RegisterCustomerAction implements Action {
         Customer customer = new Customer();
         customer.setEmail(request.getParameter("email"));
         customer.setName(request.getParameter("name"));
-        customer.setPassword(CustomerDAO.hashPassword(request.getParameter("password")));
+        customer.setPassword(Authentication.hashPassword(request.getParameter("password")));
         customer.setActivationToken(CustomerDAO.generateActivationCode());
         return customer;
     }

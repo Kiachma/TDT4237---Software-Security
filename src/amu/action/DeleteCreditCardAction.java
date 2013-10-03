@@ -1,10 +1,13 @@
 package amu.action;
 
+import amu.Authentication;
 import amu.database.CreditCardDAO;
 import amu.model.CreditCard;
 import amu.model.Customer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -38,8 +41,13 @@ class DeleteCreditCardAction implements Action {
 
         // (request.getMethod().equals("GET")) 
         creditCard = creditCardDAO.read(Integer.parseInt(request.getParameter("id")));
-        request.setAttribute("creditCard", creditCard);
-        return new ActionResponse(ActionResponseType.FORWARD, "deleteCreditCard");
+        if (creditCard!=null && creditCard.getCustomer().getId() == customer.getId()) {
+            request.setAttribute("creditCard", creditCard);
+            return new ActionResponse(ActionResponseType.FORWARD, "deleteCreditCard");
+        } else {
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Customer ("+customer.getId()+") tried to use an invalid credit card");
+            Authentication.logOutCustomer(session, customer);
+            return new ActionResponse(ActionResponseType.REDIRECT, "viewCustomer");
+        }
     }
-    
 }
