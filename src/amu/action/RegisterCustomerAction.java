@@ -28,9 +28,6 @@ class RegisterCustomerAction implements Action {
             CustomerDAO customerDAO = new CustomerDAO();
             Customer customer = customerDAO.findByEmail(request.getParameter("email"));
             
-            if (!validateCaptcha(request)) {
-            	return new ActionResponse(ActionResponseType.REDIRECT, "registrationError");
-    		}
             return doPost(request);
         }
 
@@ -62,7 +59,7 @@ class RegisterCustomerAction implements Action {
 
     private boolean validateInput(HttpServletRequest request) {
         return Utils.validateInputLengths(request, messages) && validateEmail(request)
-                && validateAlphaNum(request, messages) && validatePassword(request);
+                && validateAlphaNum(request, messages) && validatePassword(request) && validateCaptcha(request);
 
     }
 
@@ -137,11 +134,13 @@ class RegisterCustomerAction implements Action {
 
 		String challenge = request.getParameter("recaptcha_challenge_field");
 		String uresponse = request.getParameter("recaptcha_response_field");
-                if(challenge!=null && uresponse!=null){
-                    ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
-                                    challenge, uresponse);
-                    return reCaptchaResponse.isValid();
-                }
+        if(challenge!=null && uresponse!=null){
+            ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
+                            challenge, uresponse);
+            boolean valid = reCaptchaResponse.isValid();
+            if (valid) return true;
+        }
+        messages.put("captcha", "CAPTCHA challenge failed");       
                 
         return false;
 	}

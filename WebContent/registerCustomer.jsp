@@ -51,6 +51,9 @@
 														out.print(c.createRecaptchaHtml(null, null));
 										%>
 									</td>
+									<c:if test="${not empty messages.captcha}">
+										<td><span class="error">${messages.captcha}</span></td>
+                                    </c:if>
 								</tr>
                             </table>
                             <div><input type="submit" value="Submit"></div>
