@@ -5,17 +5,27 @@ import amu.Mailer;
 import amu.Utils;
 import amu.database.CustomerDAO;
 import amu.model.Customer;
+<<<<<<< HEAD
+||||||| merged common ancestors
+import javax.servlet.http.HttpServlet;
+=======
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+>>>>>>> master
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+<<<<<<< HEAD
 
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
+||||||| merged common ancestors
+import javax.servlet.http.HttpSession;
+=======
+>>>>>>> master
 
 class RegisterCustomerAction implements Action {
 
@@ -25,15 +35,96 @@ class RegisterCustomerAction implements Action {
     public ActionResponse execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         if (request.getMethod().equals("POST")) {
+<<<<<<< HEAD
             CustomerDAO customerDAO = new CustomerDAO();
             Customer customer = customerDAO.findByEmail(request.getParameter("email"));
             
+            if (!validateCaptcha(request)) {
+            	return new ActionResponse(ActionResponseType.REDIRECT, "registrationError");
+    		}
+
+            if (customer == null) {
+                customer = new Customer();
+                customer.setEmail(request.getParameter("email"));
+                customer.setName(request.getParameter("name"));
+                customer.setPassword(CustomerDAO.hashPassword(request.getParameter("password")));
+                customer.setActivationToken(CustomerDAO.generateActivationCode());
+                customer = customerDAO.register(customer);
+                
+                ActionResponse actionResponse = new ActionResponse(ActionResponseType.REDIRECT, "activateCustomer");
+                actionResponse.addParameter("email", customer.getEmail());
+                
+                StringBuilder sb = new StringBuilder();
+                sb.append("Welcome to Amu-Darya, the really insecure bookstore!\n\n");
+                sb.append("To activate your account, click <a href='http://");
+                sb.append(request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/");
+                sb.append(actionResponse.getURL() + actionResponse.getParameterString());
+                sb.append("&activationToken=" + customer.getActivationToken());
+                sb.append("'>here</a>, or use this activation code: " + customer.getActivationToken());
+               
+                Mailer.send(customer.getEmail(), "Activation required", sb.toString());
+ 
+                return actionResponse;
+            } else {
+                return new ActionResponse(ActionResponseType.REDIRECT, "registrationError");
+            }
+||||||| merged common ancestors
+            CustomerDAO customerDAO = new CustomerDAO();
+            Customer customer = customerDAO.findByEmail(request.getParameter("email"));
+
+            if (customer == null) {
+                customer = new Customer();
+                customer.setEmail(request.getParameter("email"));
+                customer.setName(request.getParameter("name"));
+                customer.setPassword(CustomerDAO.hashPassword(request.getParameter("password")));
+                customer.setActivationToken(CustomerDAO.generateActivationCode());
+                customer = customerDAO.register(customer);
+                
+                ActionResponse actionResponse = new ActionResponse(ActionResponseType.REDIRECT, "activateCustomer");
+                actionResponse.addParameter("email", customer.getEmail());
+                
+                StringBuilder sb = new StringBuilder();
+                sb.append("Welcome to Amu-Darya, the really insecure bookstore!\n\n");
+                sb.append("To activate your account, click <a href='http://");
+                sb.append(request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/");
+                sb.append(actionResponse.getURL() + actionResponse.getParameterString());
+                sb.append("&activationToken=" + customer.getActivationToken());
+                sb.append("'>here</a>, or use this activation code: " + customer.getActivationToken());
+               
+                Mailer.send(customer.getEmail(), "Activation required", sb.toString());
+ 
+                return actionResponse;
+            } else {
+                return new ActionResponse(ActionResponseType.REDIRECT, "registrationError");
+            }
+=======
             return doPost(request);
+>>>>>>> master
         }
 
         // Else we show the register form
         return new ActionResponse(ActionResponseType.FORWARD, "registerCustomer");
     }
+<<<<<<< HEAD
+    
+    private boolean validateCaptcha(HttpServletRequest request) {
+
+		String remoteAddr = request.getRemoteAddr();
+		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+		reCaptcha.setPrivateKey(Config.RECAPTCHA_PRIVATE_KEY);
+
+		String challenge = request.getParameter("recaptcha_challenge_field");
+		String uresponse = request.getParameter("recaptcha_response_field");
+                if(challenge!=null && uresponse!=null){
+                    ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
+                                    challenge, uresponse);
+                    return reCaptchaResponse.isValid();
+                }
+                
+        return false;
+	}
+||||||| merged common ancestors
+=======
 
     private ActionResponse doPost(HttpServletRequest request) {
         CustomerDAO customerDAO = new CustomerDAO();
@@ -59,7 +150,7 @@ class RegisterCustomerAction implements Action {
 
     private boolean validateInput(HttpServletRequest request) {
         return Utils.validateInputLengths(request, messages) && validateEmail(request)
-                && validateAlphaNum(request, messages) && validatePassword(request) && validateCaptcha(request);
+                && validateAlphaNum(request, messages) && validatePassword(request);
 
     }
 
@@ -125,23 +216,5 @@ class RegisterCustomerAction implements Action {
         return true;
         
     }
-    
-    private boolean validateCaptcha(HttpServletRequest request) {
-
-		String remoteAddr = request.getRemoteAddr();
-		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-		reCaptcha.setPrivateKey(Config.RECAPTCHA_PRIVATE_KEY);
-
-		String challenge = request.getParameter("recaptcha_challenge_field");
-		String uresponse = request.getParameter("recaptcha_response_field");
-        if(challenge!=null && uresponse!=null){
-            ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
-                            challenge, uresponse);
-            boolean valid = reCaptchaResponse.isValid();
-            if (valid) return true;
-        }
-        messages.put("captcha", "CAPTCHA challenge failed");       
-                
-        return false;
-	}
+>>>>>>> master
 }
