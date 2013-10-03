@@ -42,7 +42,7 @@
                                     </c:if>
                                 </tr>
                                 <tr>
-                                	<td>Prove your humanity</td>
+                                	<td><label for="captcha">Prove your humanity</label></td>
 									<td>
 										<%
 											ReCaptcha c = ReCaptchaFactory.newReCaptcha(
@@ -57,6 +57,10 @@
 								</tr>
                             </table>
                             <div><input type="submit" value="Submit"></div>
+                            <c:if test="${not empty messages.error}">
+                            	<br><br>
+                            	<span class="error">${messages.error}</span>
+                           	</c:if>
                         </form>
                     </div>
                 </c:otherwise>

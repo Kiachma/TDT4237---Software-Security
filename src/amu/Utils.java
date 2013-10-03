@@ -22,10 +22,12 @@ public class Utils {
             String field = names.nextElement();
             String input = request.getParameter(field);
             if (input == null || input.length() < 1) {
-                messages.put(field, field + " cannot be blank.");
+                messages.put(field, field + " cannot be blank.");//TODO Phase out
+                messages.put("error", field + " cannot be blank.");
                 return false;
             } else if (input.length() >= Config.MAX_INPUT_LENGTH) {
                 messages.put(field, field + " can not be longer than " + Config.MAX_INPUT_LENGTH + " characters.");
+                messages.put("error", field + " can not be longer than " + Config.MAX_INPUT_LENGTH + " characters.");//TODO Phase out
                 return false;
             } else {
                 messages.put(field, null);
