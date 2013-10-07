@@ -52,13 +52,15 @@ textarea{
     padding-bottom: 5px;
 }
 
-.view-cart-link {
+.header-link {
     padding-top: 60px;
     padding-right: 30px;
     font-size: 24pt;
     font-family: sans-serif;
     float:right;
 }
+
+
 
 .error{
     color: red

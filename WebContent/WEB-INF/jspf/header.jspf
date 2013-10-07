@@ -8,8 +8,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Amu-Darya Bookstore</title>
     </head>
+    
+   
     <header>
         <a href="<c:url value="/" />" > <img src="<c:url value = "/img/amudarya.png" />" /> </a>
-        <span class="view-cart-link"><a href="<c:url value = "/viewCart.do" />">View cart</a></span>
+            <c:if test="${not empty customer}" >
+                <span class="header-link"><a href="<c:url value = "/logoutCustomer.do" />">Log out</a></span>
+            </c:if>
+        <span class="header-link"><a href="<c:url value = "/viewCart.do" />">View cart</a></span>
     </header>
     <body>
