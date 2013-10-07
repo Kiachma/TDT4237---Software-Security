@@ -42,6 +42,7 @@ public class ActionFactory implements ServletContextListener {
 
         // Customer actions
         map.put("loginCustomer", new LoginCustomerAction());
+        map.put("logoutCustomer", new LogoutCustomerAction());
         map.put("loginError", new ForwardAction("loginError"));
         map.put("registerCustomer", new RegisterCustomerAction());
         map.put("registrationError", new ForwardAction("registrationError"));        
