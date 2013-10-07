@@ -22,20 +22,25 @@ public class Authentication {
 
     public static String hashPassword(String plainTextPassword) {
         String hashedPassword = null;
+        String tmp = plainTextPassword;
         try {
-            hashedPassword = DatatypeConverter.printHexBinary(MessageDigest.getInstance("SHA1").digest((plainTextPassword + Config.SALT).getBytes()));
+            for (int i = 0; i < 1000; i++) {
+
+                tmp = DatatypeConverter.printHexBinary(MessageDigest.getInstance("SHA1").digest((tmp + Config.SALT).getBytes()));
+
+            }
+            hashedPassword = tmp;
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return hashedPassword;
     }
-    
-    public static void logInCustomer(HttpSession session, Customer customer){
+
+    public static void logInCustomer(HttpSession session, Customer customer) {
         session.setAttribute("customer", customer);
     }
-    
-    public static void logOutCustomer(HttpSession session, Customer customer){
+
+    public static void logOutCustomer(HttpSession session, Customer customer) {
         session.setAttribute("customer", null);
     }
-    
 }
