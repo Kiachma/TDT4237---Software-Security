@@ -98,7 +98,7 @@ public class CustomerDAO {
             statement.setString(1, customer.getEmail());
             statement.setString(2, customer.getPassword());
             statement.setString(3, customer.getName());
-            statement.setString(4, customer.getEmail());
+            statement.setString(4, customer.getActivationToken());
             
             statement.executeUpdate();
             Logger.getLogger(this.getClass().getName()).log(Level.FINE, "register SQL Query: " + query);
