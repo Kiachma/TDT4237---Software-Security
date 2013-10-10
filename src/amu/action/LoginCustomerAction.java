@@ -36,6 +36,7 @@ class LoginCustomerAction implements Action {
 
 	private ActionResponse authenticateUser(HttpServletRequest request,
 			Map<String, String> values) {
+                request.getSession().invalidate();
 		HttpSession session = request.getSession(true);
 		String email = request.getParameter("email");
 		String passwd = request.getParameter("password");
