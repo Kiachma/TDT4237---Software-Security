@@ -20,15 +20,16 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
 
 class RegisterCustomerAction implements Action {
 
-    private Map<String, String> messages = new HashMap<String, String>();
+    private Map<String, String> messages;
 
     @Override
     public ActionResponse execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+        
         if (request.getMethod().equals("POST")) {
+            messages = new HashMap<String, String>();
             CustomerDAO customerDAO = new CustomerDAO();
             Customer customer = customerDAO.findByEmail(request.getParameter("email"));
-            
+
             return doPost(request);
         }
 
@@ -59,27 +60,14 @@ class RegisterCustomerAction implements Action {
     }
 
     private boolean validateInput(HttpServletRequest request) {
-        return Utils.validateInputLengths(request, messages) && validateEmail(request)
-                && validateAlphaNum(request, messages) && validatePassword(request) && validateCaptcha(request);
-
-    }
-
-    private boolean validatePassword(HttpServletRequest request) {
-        /*
-         * ^                 # start-of-string
-         (?=.*[0-9])       # a digit must occur at least once
-         (?=.*[a-z])       # a lower case letter must occur at least once
-         (?=.*[A-Z])       # an upper case letter must occur at least once
-         (?=.*[@#$%^&+=])  # a special character must occur at least once
-         .{8,42}             # anything, at least eight places though
-         $                 # end-of-string
-         */
-        if (!request.getParameter("password").matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$")) {
+        
+        boolean passwordOK = Utils.validatePassword(request.getParameter("password"));
+        if (!passwordOK) {
             messages.put("password", "password must be between 8 and 40 charactes long and contain: a special character(@#$%^&+=), an upper case letter, a lower case letter and a digit ");
-            return false;
         }
-        messages.put("password", null);
-        return true;
+        return Utils.validateInputLengths(request, messages) && validateEmail(request)
+                && validateAlphaNum(request, messages) && passwordOK && validateCaptcha(request);
+
     }
 
     private boolean validateEmail(HttpServletRequest request) {
@@ -90,7 +78,6 @@ class RegisterCustomerAction implements Action {
             messages.put("email", "Not a valid email address ");
             return false;
         }
-        messages.put("email", null);
         return true;
     }
 
@@ -118,31 +105,32 @@ class RegisterCustomerAction implements Action {
     }
 
     private boolean validateAlphaNum(HttpServletRequest request, Map<String, String> messages) {
-        if(!Utils.validateAlphaNum(request.getParameter("name"))){
+        if (!Utils.validateAlphaNum(request.getParameter("name"))) {
             messages.put("name", "name has to be alphanumeric");
             return false;
         }
-        messages.put("name", null);
         return true;
-        
+
     }
-    
+
     private boolean validateCaptcha(HttpServletRequest request) {
 
-		String remoteAddr = request.getRemoteAddr();
-		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-		reCaptcha.setPrivateKey(Config.RECAPTCHA_PRIVATE_KEY);
+        String remoteAddr = request.getRemoteAddr();
+        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+        reCaptcha.setPrivateKey(Config.RECAPTCHA_PRIVATE_KEY);
 
-		String challenge = request.getParameter("recaptcha_challenge_field");
-		String uresponse = request.getParameter("recaptcha_response_field");
-        if(challenge!=null && uresponse!=null){
+        String challenge = request.getParameter("recaptcha_challenge_field");
+        String uresponse = request.getParameter("recaptcha_response_field");
+        if (challenge != null && uresponse != null) {
             ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
-                            challenge, uresponse);
+                    challenge, uresponse);
             boolean valid = reCaptchaResponse.isValid();
-            if (valid) return true;
+            if (valid) {
+                return true;
+            }
         }
-        messages.put("captcha", "CAPTCHA challenge failed");       
-                
+        messages.put("captcha", "CAPTCHA challenge failed");
+
         return false;
-	}
+    }
 }
