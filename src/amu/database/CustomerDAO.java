@@ -11,7 +11,7 @@ import java.util.logging.*;
 import javax.sql.*;
 import javax.xml.bind.DatatypeConverter;
 
-public class CustomerDAO {
+public final class CustomerDAO {
 
     public static String generateActivationCode() {
         SecureRandom random = new SecureRandom();

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AuthorDAO {
+public final class AuthorDAO {
     public List<Author> findByBookID(int bookID) {
         List<Author> authors = new ArrayList<Author>();
         

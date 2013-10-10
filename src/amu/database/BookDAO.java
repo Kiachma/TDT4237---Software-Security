@@ -7,7 +7,7 @@ import amu.model.Title;
 import java.sql.*;
 import java.util.logging.*;
 
-public class BookDAO {
+public final class BookDAO {
     public Book findByISBN(String isbn) {
         Book book = null;
         
