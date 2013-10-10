@@ -59,27 +59,16 @@ class RegisterCustomerAction implements Action {
     }
 
     private boolean validateInput(HttpServletRequest request) {
+       boolean passwordOK=Utils.validatePassword(request.getParameter("password"));
+       if(passwordOK){
+                      messages.put("password", null);
+
+       }else{
+           messages.put("password", "password must be between 8 and 40 charactes long and contain: a special character(@#$%^&+=), an upper case letter, a lower case letter and a digit ");
+       }
         return Utils.validateInputLengths(request, messages) && validateEmail(request)
-                && validateAlphaNum(request, messages) && validatePassword(request) && validateCaptcha(request);
+                && validateAlphaNum(request, messages) && passwordOK && validateCaptcha(request);
 
-    }
-
-    private boolean validatePassword(HttpServletRequest request) {
-        /*
-         * ^                 # start-of-string
-         (?=.*[0-9])       # a digit must occur at least once
-         (?=.*[a-z])       # a lower case letter must occur at least once
-         (?=.*[A-Z])       # an upper case letter must occur at least once
-         (?=.*[@#$%^&+=])  # a special character must occur at least once
-         .{8,42}             # anything, at least eight places though
-         $                 # end-of-string
-         */
-        if (!request.getParameter("password").matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$")) {
-            messages.put("password", "password must be between 8 and 40 charactes long and contain: a special character(@#$%^&+=), an upper case letter, a lower case letter and a digit ");
-            return false;
-        }
-        messages.put("password", null);
-        return true;
     }
 
     private boolean validateEmail(HttpServletRequest request) {

@@ -77,4 +77,11 @@ public class Utils {
         }
         return true;
     }
+
+    public static boolean validatePassword(String password) {
+        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$")) {
+            return false;
+        }
+        return true;
+    }
 }

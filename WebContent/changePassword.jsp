@@ -11,6 +11,10 @@
     <form action="changePassword.do" method="post">
     	<table class="general-table">
         <tr>
+            <td><label for="oldPassword">Old password</label></td> 
+            <td><input id="password" name="oldPassword" type="password" value="${values.oldPassword}" /></td>
+        </tr>
+        <tr>
             <td><label for="password">New password</label></td> 
             <td><input id="password" name="password" type="password" value="${values.password[0]}" /></td>
         </tr>
