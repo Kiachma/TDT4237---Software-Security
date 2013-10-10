@@ -63,7 +63,6 @@ public class Utils {
                 messages.put("error", friendlyField + " can not be longer than " + Config.MAX_INPUT_LENGTH + " characters.");//TODO Phase out
                 return false;
             } else {
-                messages.put(field, null);
             }
         }
         return true;
@@ -73,6 +72,13 @@ public class Utils {
         Pattern p = Pattern.compile("[^a-zA-Z0-9\\såäöæø]");
         boolean hasSpecialChar = p.matcher(input).find();
         if (hasSpecialChar) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean validatePassword(String password) {
+        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$")) {
             return false;
         }
         return true;
