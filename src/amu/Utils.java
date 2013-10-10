@@ -63,7 +63,6 @@ public class Utils {
                 messages.put("error", friendlyField + " can not be longer than " + Config.MAX_INPUT_LENGTH + " characters.");//TODO Phase out
                 return false;
             } else {
-                messages.put(field, null);
             }
         }
         return true;

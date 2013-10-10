@@ -20,15 +20,16 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
 
 class RegisterCustomerAction implements Action {
 
-    private Map<String, String> messages = new HashMap<String, String>();
+    private Map<String, String> messages;
 
     @Override
     public ActionResponse execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+        
         if (request.getMethod().equals("POST")) {
+            messages = new HashMap<String, String>();
             CustomerDAO customerDAO = new CustomerDAO();
             Customer customer = customerDAO.findByEmail(request.getParameter("email"));
-            
+
             return doPost(request);
         }
 
@@ -59,13 +60,11 @@ class RegisterCustomerAction implements Action {
     }
 
     private boolean validateInput(HttpServletRequest request) {
-       boolean passwordOK=Utils.validatePassword(request.getParameter("password"));
-       if(passwordOK){
-                      messages.put("password", null);
-
-       }else{
-           messages.put("password", "password must be between 8 and 40 charactes long and contain: a special character(@#$%^&+=), an upper case letter, a lower case letter and a digit ");
-       }
+        
+        boolean passwordOK = Utils.validatePassword(request.getParameter("password"));
+        if (!passwordOK) {
+            messages.put("password", "password must be between 8 and 40 charactes long and contain: a special character(@#$%^&+=), an upper case letter, a lower case letter and a digit ");
+        }
         return Utils.validateInputLengths(request, messages) && validateEmail(request)
                 && validateAlphaNum(request, messages) && passwordOK && validateCaptcha(request);
 
@@ -79,7 +78,6 @@ class RegisterCustomerAction implements Action {
             messages.put("email", "Not a valid email address ");
             return false;
         }
-        messages.put("email", null);
         return true;
     }
 
@@ -107,31 +105,32 @@ class RegisterCustomerAction implements Action {
     }
 
     private boolean validateAlphaNum(HttpServletRequest request, Map<String, String> messages) {
-        if(!Utils.validateAlphaNum(request.getParameter("name"))){
+        if (!Utils.validateAlphaNum(request.getParameter("name"))) {
             messages.put("name", "name has to be alphanumeric");
             return false;
         }
-        messages.put("name", null);
         return true;
-        
+
     }
-    
+
     private boolean validateCaptcha(HttpServletRequest request) {
 
-		String remoteAddr = request.getRemoteAddr();
-		ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-		reCaptcha.setPrivateKey(Config.RECAPTCHA_PRIVATE_KEY);
+        String remoteAddr = request.getRemoteAddr();
+        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+        reCaptcha.setPrivateKey(Config.RECAPTCHA_PRIVATE_KEY);
 
-		String challenge = request.getParameter("recaptcha_challenge_field");
-		String uresponse = request.getParameter("recaptcha_response_field");
-        if(challenge!=null && uresponse!=null){
+        String challenge = request.getParameter("recaptcha_challenge_field");
+        String uresponse = request.getParameter("recaptcha_response_field");
+        if (challenge != null && uresponse != null) {
             ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr,
-                            challenge, uresponse);
+                    challenge, uresponse);
             boolean valid = reCaptchaResponse.isValid();
-            if (valid) return true;
+            if (valid) {
+                return true;
+            }
         }
-        messages.put("captcha", "CAPTCHA challenge failed");       
-                
+        messages.put("captcha", "CAPTCHA challenge failed");
+
         return false;
-	}
+    }
 }
