@@ -31,4 +31,11 @@ class CustomerSupportAction implements Action {
 
         return new ActionResponse(ActionResponseType.FORWARD, "customerSupport");
     }
+    
+    private boolean validateField(String field){
+        char[] badChars = new char[]{'&', '<', '>', '"', 39, 47};
+        
+        return true;
+        
+    }
 }

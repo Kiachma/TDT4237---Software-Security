@@ -8,6 +8,9 @@
             <c:if test="${not empty messages.name}">
                 <span class="error">${messages.name}</span>
             </c:if>
+            <c:if test="${not empty messages.illegalName}">
+                <span class="error">${messages.illegalName}</span>
+            </c:if>
         </div>
         <div><input type="submit" value="Submit" /></div>
     </form>
