@@ -6,13 +6,16 @@ package amu;
 
 import amu.database.CustomerDAO;
 import amu.model.Customer;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.sql.PreparedStatement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.mail.Session;
 import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
+import sun.misc.BASE64Encoder;
 
 /**
  *
@@ -20,14 +23,13 @@ import javax.xml.bind.DatatypeConverter;
  */
 public class Authentication {
 
-    public static String hashPassword(String plainTextPassword) {
+    public static String hashPassword(String plainTextPassword, String salt) {
         String hashedPassword = null;
         String tmp = plainTextPassword;
         try {
             for (int i = 0; i < 1000; i++) {
 
-                tmp = DatatypeConverter.printHexBinary(MessageDigest.getInstance("SHA1").digest((tmp + Config.SALT).getBytes()));
-
+                tmp = DatatypeConverter.printHexBinary(MessageDigest.getInstance("SHA1").digest((tmp + salt + Config.PEPPER).getBytes()));
             }
             hashedPassword = tmp;
         } catch (NoSuchAlgorithmException ex) {
@@ -42,5 +44,27 @@ public class Authentication {
 
     public static void logOutCustomer(HttpSession session, Customer customer) {
         session.setAttribute("customer", null);
+    }
+
+    public static String generateSalt() throws NoSuchAlgorithmException {
+        // Uses a secure Random not a simple Random
+        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+        // Salt generation 64 bits long
+        byte[] bSalt = new byte[8];
+        random.nextBytes(bSalt);
+        // Digest computation
+        return byteToBase64(bSalt);
+    }
+
+    /**
+     * From a String returns a base 64 representation
+     *
+     * @param data String
+     * @return String
+     * @throws IOException
+     */
+    public static String byteToBase64(byte[] data) {
+        BASE64Encoder endecoder = new BASE64Encoder();
+        return endecoder.encode(data);
     }
 }

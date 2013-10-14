@@ -6,10 +6,11 @@ import amu.Mailer;
 import amu.Utils;
 import amu.database.CustomerDAO;
 import amu.model.Customer;
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +25,8 @@ class RegisterCustomerAction implements Action {
 
     @Override
     public ActionResponse execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        
-        if (request.getMethod().equals("POST")) {
-            messages = new HashMap<String, String>();
-            CustomerDAO customerDAO = new CustomerDAO();
-            Customer customer = customerDAO.findByEmail(request.getParameter("email"));
 
+        if (request.getMethod().equals("POST")) { 
             return doPost(request);
         }
 
@@ -38,6 +35,7 @@ class RegisterCustomerAction implements Action {
     }
 
     private ActionResponse doPost(HttpServletRequest request) {
+        messages = new HashMap<>();
         CustomerDAO customerDAO = new CustomerDAO();
         Customer customer = customerDAO.findByEmail(request.getParameter("email"));
         request.setAttribute("messages", messages);
@@ -60,7 +58,7 @@ class RegisterCustomerAction implements Action {
     }
 
     private boolean validateInput(HttpServletRequest request) {
-        
+
         boolean passwordOK = Utils.validatePassword(request.getParameter("password"));
         if (!passwordOK) {
             messages.put("password", "password must be between 8 and 40 charactes long and contain: a special character(@#$%^&+=), an upper case letter, a lower case letter and a digit ");
@@ -85,9 +83,17 @@ class RegisterCustomerAction implements Action {
         Customer customer = new Customer();
         customer.setEmail(request.getParameter("email"));
         customer.setName(request.getParameter("name"));
-        customer.setPassword(Authentication.hashPassword(request.getParameter("password")));
-        customer.setActivationToken(CustomerDAO.generateActivationCode());
-        return customer;
+        try {
+            String salt = Authentication.generateSalt();
+            customer.setPassword(Authentication.hashPassword(request.getParameter("password"), salt));
+            customer.setActivationToken(CustomerDAO.generateActivationCode());
+            customer.setSalt(salt);
+            return customer;
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(RegisterCustomerAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+
     }
 
     private void activateUser(ActionResponse actionResponse, Customer customer, HttpServletRequest request) {
