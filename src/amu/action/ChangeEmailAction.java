@@ -50,8 +50,10 @@ class ChangeEmailAction implements Action {
 
             // Validation OK, do business logic
             CustomerDAO customerDAO = new CustomerDAO();
+            String oldEmail = customer.getEmail();
             customer.setEmail(email[0]);
             if (customerDAO.edit(customer) == false) {
+            	customer.setEmail(oldEmail);
                 messages.add("DB update unsuccessful, likely there is already a user with this email address.");
                 return new ActionResponse(ActionResponseType.FORWARD, "changeEmail");
             }
