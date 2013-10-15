@@ -67,8 +67,9 @@ public final class CustomerDAO {
             statement.setString(1, customer.getEmail());
             statement.setString(2, customer.getPassword());
             statement.setString(3, customer.getName());
-            statement.setInt(4, customer.getId());
-            statement.setString(5, customer.getSalt());
+            statement.setString(4, customer.getSalt());
+            statement.setInt(5, customer.getId());
+            
 
             if (statement.executeUpdate() == 0) {
                 return false; // No rows were affected
