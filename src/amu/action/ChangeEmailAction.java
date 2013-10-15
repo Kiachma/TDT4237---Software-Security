@@ -1,5 +1,6 @@
 package amu.action;
 
+import amu.Authentication;
 import amu.database.CustomerDAO;
 import amu.model.Customer;
 import java.util.ArrayList;
@@ -38,11 +39,21 @@ class ChangeEmailAction implements Action {
                 messages.add("New email and repeated email did not match. Please check for typing errors.");
                 return new ActionResponse(ActionResponseType.FORWARD, "changeEmail");
             }
+            
+            // Validate password
+            String password = request.getParameter("password");
+            boolean matches = Authentication.verifyPassword(customer, password);
+            if (!matches) {
+            	messages.add("Authentication error. Please try again.");
+            	return new ActionResponse(ActionResponseType.FORWARD, "changeEmail");
+            }
 
             // Validation OK, do business logic
             CustomerDAO customerDAO = new CustomerDAO();
+            String oldEmail = customer.getEmail();
             customer.setEmail(email[0]);
             if (customerDAO.edit(customer) == false) {
+            	customer.setEmail(oldEmail);
                 messages.add("DB update unsuccessful, likely there is already a user with this email address.");
                 return new ActionResponse(ActionResponseType.FORWARD, "changeEmail");
             }
