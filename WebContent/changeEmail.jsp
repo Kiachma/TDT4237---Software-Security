@@ -17,6 +17,9 @@
             <td><label for="email">Repeat email</label></td> 
             <td><input id="email" name="email" type="text" value="${values.email[1]}" /></td>
         </tr>
+        <tr>
+        	<td><label for="password">Enter password</label></td>
+        	<td><input id="password" name="password" type="password" value="" /></td>
         </table>
         <div><input type="submit" value="Submit" /></div>
     </form>
