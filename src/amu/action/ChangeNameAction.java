@@ -1,5 +1,7 @@
 package amu.action;
 
+import amu.Authentication;
+import amu.Utils;
 import amu.database.CustomerDAO;
 import amu.model.Customer;
 import java.util.HashMap;
@@ -25,14 +27,40 @@ class ChangeNameAction implements Action {
 
             Map<String, String> messages = new HashMap<String, String>();
             request.setAttribute("messages", messages);
-
-            customer.setName(request.getParameter("name"));
+            String newName = request.getParameter("name");
+            
+            //Validate input
+            boolean lengthsPassed = Utils.validateInputLengths(request, messages);
+            boolean namePassedAlpha = false;
+            if (lengthsPassed) {
+            	namePassedAlpha = Utils.validateAlphaNum(newName);
+            	if (!namePassedAlpha) {
+            		messages.put("name", "Name field contains illegal characters");
+            	}
+            }
+			if (!lengthsPassed || !namePassedAlpha) {
+            	return new ActionResponse(ActionResponseType.FORWARD, "changeName");
+            }
+            
+            // Validate password
+            String password = request.getParameter("password");
+            boolean matches = Authentication.verifyPassword(customer, password);
+            if (!matches) {
+            	messages.put("password", "Authentication error. Please try again.");
+            	return new ActionResponse(ActionResponseType.FORWARD, "changeName");
+            }
+            
+            //Keep track of original name
+            String oldName = customer.getName();
+			customer.setName(newName);
 
             CustomerDAO customerDAO = new CustomerDAO();
             if (customerDAO.edit(customer)) { // Customer name was successfully changed
                 return new ActionResponse(ActionResponseType.REDIRECT, "viewCustomer");
             } else {
-                messages.put("name", "Something went wrong here.");
+            	//reset name
+            	customer.setName(oldName);
+                messages.put("name", "Name change failed, please try again later.");
                 return new ActionResponse(ActionResponseType.FORWARD, "changeName");
             }
         }
