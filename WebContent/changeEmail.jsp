@@ -4,8 +4,8 @@
     <c:if test="${not empty messages}">
         <c:forEach var="message" items="${messages}">
             <div><span class="error">${message}</span></div>
-            </c:forEach>
-        </c:if>
+        </c:forEach>
+    </c:if>
     <div class="general-form">
     <form action="changeEmail.do" method="post">
     	<table class="general-table">
@@ -20,6 +20,7 @@
         <tr>
         	<td><label for="password">Enter password</label></td>
         	<td><input id="password" name="password" type="password" value="" /></td>
+       	</tr>
         </table>
         <div><input type="submit" value="Submit" /></div>
     </form>
