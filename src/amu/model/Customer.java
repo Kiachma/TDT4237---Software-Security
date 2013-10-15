@@ -4,11 +4,13 @@ import java.io.Serializable;
 
 // TODO: Refactor... Add validation, make a real Model class not just POD
 public class Customer implements Serializable {
+
     private int id;
     private String email;
     private String password;
     private String name;
     private String activationToken = null;
+    private String salt;
 
     public int getId() {
         return id;
@@ -48,5 +50,13 @@ public class Customer implements Serializable {
 
     public void setActivationToken(String activationToken) {
         this.activationToken = activationToken;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }

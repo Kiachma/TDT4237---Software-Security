@@ -29,7 +29,7 @@ public final class CustomerDAO {
 
         try {
             connection = Database.getConnection();
-            
+
 
             String query = "SELECT * FROM customer WHERE email=?";
             statement = connection.prepareStatement(query);
@@ -62,13 +62,14 @@ public final class CustomerDAO {
         try {
             connection = Database.getConnection();
 
-            String query = "UPDATE customer SET email=?, password=?, name=? WHERE id=?";
+            String query = "UPDATE customer SET email=?, password=?, name=?, salt=? WHERE id=?";
             statement = connection.prepareStatement(query);
             statement.setString(1, customer.getEmail());
             statement.setString(2, customer.getPassword());
             statement.setString(3, customer.getName());
             statement.setInt(4, customer.getId());
-          
+            statement.setString(5, customer.getSalt());
+
             if (statement.executeUpdate() == 0) {
                 return false; // No rows were affected
             } else {
@@ -82,7 +83,7 @@ public final class CustomerDAO {
             Database.close(connection, statement, resultSet);
         }
     }
-    
+
     public Customer register(Customer customer) {
 
         DataSource dataSource = null;
@@ -91,15 +92,16 @@ public final class CustomerDAO {
 
         try {
             connection = Database.getConnection();
-            
 
-            String query = "INSERT INTO customer (email, password, name, activation_token) VALUES (?,?,?,?)";
+
+            String query = "INSERT INTO customer (email, password, name, activation_token, salt) VALUES (?,?,?,?,?)";
             statement = connection.prepareStatement(query);
             statement.setString(1, customer.getEmail());
             statement.setString(2, customer.getPassword());
             statement.setString(3, customer.getName());
             statement.setString(4, customer.getActivationToken());
-            
+            statement.setString(5, customer.getSalt());
+
             statement.executeUpdate();
             Logger.getLogger(this.getClass().getName()).log(Level.FINE, "register SQL Query: " + query);
 
@@ -136,8 +138,7 @@ public final class CustomerDAO {
         }
         return customer;
     }
-    
-    
+
     public Customer findById(int id) {
         Customer customer = null;
 
@@ -147,7 +148,7 @@ public final class CustomerDAO {
 
         try {
             connection = Database.getConnection();
-            
+
 
             String query = "SELECT * FROM customer WHERE id=?";
             statement = connection.prepareStatement(query);
@@ -171,7 +172,32 @@ public final class CustomerDAO {
         }
         return customer;
     }
-    
-   
-    
+
+    public String getSalt(int id) {
+        String salt = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = Database.getConnection();
+
+
+            String query = "SELECT salt FROM customer WHERE id=?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+            Logger.getLogger(this.getClass().getName()).log(Level.FINE, "findByEmail SQL Query: " + query);
+
+
+            if (resultSet.next()) {
+                salt=resultSet.getString("salt");
+            }
+        } catch (SQLException exception) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, exception);
+        } finally {
+            Database.close(connection, statement, resultSet);
+        }
+        return salt;
+    }
 }
