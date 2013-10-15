@@ -62,14 +62,23 @@ public final class CustomerDAO {
         try {
             connection = Database.getConnection();
 
-            String query = "UPDATE customer SET email=?, password=?, name=?, salt=? WHERE id=?";
+            String query = "UPDATE customer SET email=?, password=?, name=?";
+            if (customer.getSalt() != null) {
+                query = query.concat(", salt=?");
+            }
+            query = query.concat("WHERE id=?");
             statement = connection.prepareStatement(query);
             statement.setString(1, customer.getEmail());
             statement.setString(2, customer.getPassword());
             statement.setString(3, customer.getName());
-            statement.setString(4, customer.getSalt());
-            statement.setInt(5, customer.getId());
-            
+            if (customer.getSalt() != null) {
+                statement.setString(4, customer.getSalt());
+                statement.setInt(5, customer.getId());
+            } else {
+                statement.setInt(4, customer.getId());
+            }
+
+
 
             if (statement.executeUpdate() == 0) {
                 return false; // No rows were affected
@@ -192,7 +201,7 @@ public final class CustomerDAO {
 
 
             if (resultSet.next()) {
-                salt=resultSet.getString("salt");
+                salt = resultSet.getString("salt");
             }
         } catch (SQLException exception) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, exception);
