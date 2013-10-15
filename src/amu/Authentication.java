@@ -67,4 +67,17 @@ public class Authentication {
         BASE64Encoder endecoder = new BASE64Encoder();
         return endecoder.encode(data);
     }
+    
+    /**
+     * Verify that the password matches the customer's
+     * @param customer Customer object
+     * @param password Plaintext password
+     * @return
+     */
+    public static boolean verifyPassword(Customer customer, String password) {
+        CustomerDAO customerDAO = new CustomerDAO();
+        String customerSalt = customerDAO.getSalt(customer.getId());
+		String hashedPassword = Authentication.hashPassword(password, customerSalt);
+        return customer.getPassword().equals(hashedPassword);
+    }
 }
