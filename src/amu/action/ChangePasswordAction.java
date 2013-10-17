@@ -21,7 +21,7 @@ class ChangePasswordAction implements Action {
     public ActionResponse execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         Customer customer = (Customer) session.getAttribute("customer");
-
+        
         if (customer == null) {
             ActionResponse actionResponse = new ActionResponse(ActionResponseType.REDIRECT, "loginCustomer");
             actionResponse.addParameter("from", "changePassword");
@@ -29,6 +29,7 @@ class ChangePasswordAction implements Action {
         }
 
         if (request.getMethod().equals("POST")) {
+            customerDAO = new CustomerDAO();
             List<String> messages = new ArrayList<String>();
             request.setAttribute("messages", messages);
             String oldPassword = request.getParameter("oldPassword");
