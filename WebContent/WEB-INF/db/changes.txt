@@ -1,2 +1,3 @@
-#__name             date
-00001_added_salt    14.10.2013
+#__name                     date
+00001_added_salt            14.10.2013
+00002_extension_models      17.10.2013
