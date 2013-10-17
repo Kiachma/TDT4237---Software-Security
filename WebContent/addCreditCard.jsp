@@ -1,6 +1,11 @@
 <div class="container">
 <h1>Add Credit Card</h1>
 	<div class="general-form">
+	<c:if test="${not empty messages}">
+        <c:forEach var="message" items="${messages}">
+            <div><span class="error">${message.value}</span></div>
+        </c:forEach>
+    </c:if>
     <form action="addCreditCard.do" method="post">
     	<table class="general-table">
         <tr>
@@ -44,6 +49,11 @@
                 <td class="error">${messages.expiryDate}</td>
             </c:if>
         </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr>
+	        	<td><label for="password">Confirm account password to store changes:</label></td>
+	        	<td><input id="password" name="password" type="password" value="" /></td>
+ 		</tr>
         </table>
         <div><input type="submit" value="Submit" /></div>
     </form>

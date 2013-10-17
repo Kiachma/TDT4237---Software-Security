@@ -15,6 +15,11 @@
             <div><label for="address">Add address: </label></div>
             <textarea id="address" name="address" rows="5" cols="20">${address.address}</textarea>
         </div>
+        <br>
+        <div>
+        	<div>Confirm account password to add address:</div>
+        	<div><input id="password" name="password" type="password" value=""></div>
+        </div>
         <div><input type="submit" value="Submit" /></div>
     </form>
 </div>
