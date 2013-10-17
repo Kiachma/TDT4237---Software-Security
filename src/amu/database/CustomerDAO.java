@@ -63,22 +63,12 @@ public final class CustomerDAO {
             connection = Database.getConnection();
 
             String query = "UPDATE customer SET email=?, password=?, name=?";
-            if (customer.getSalt() != null) {
-                query = query.concat(", salt=?");
-            }
             query = query.concat("WHERE id=?");
             statement = connection.prepareStatement(query);
             statement.setString(1, customer.getEmail());
             statement.setString(2, customer.getPassword());
             statement.setString(3, customer.getName());
-            if (customer.getSalt() != null) {
-                statement.setString(4, customer.getSalt());
-                statement.setInt(5, customer.getId());
-            } else {
-                statement.setInt(4, customer.getId());
-            }
-
-
+            statement.setInt(4, customer.getId());
 
             if (statement.executeUpdate() == 0) {
                 return false; // No rows were affected
@@ -104,13 +94,12 @@ public final class CustomerDAO {
             connection = Database.getConnection();
 
 
-            String query = "INSERT INTO customer (email, password, name, activation_token, salt) VALUES (?,?,?,?,?)";
+            String query = "INSERT INTO customer (email, password, name, activation_token) VALUES (?,?,?,?)";
             statement = connection.prepareStatement(query);
             statement.setString(1, customer.getEmail());
             statement.setString(2, customer.getPassword());
             statement.setString(3, customer.getName());
             statement.setString(4, customer.getActivationToken());
-            statement.setString(5, customer.getSalt());
 
             statement.executeUpdate();
             Logger.getLogger(this.getClass().getName()).log(Level.FINE, "register SQL Query: " + query);
@@ -181,33 +170,5 @@ public final class CustomerDAO {
             Database.close(connection, statement, resultSet);
         }
         return customer;
-    }
-
-    public String getSalt(int id) {
-        String salt = null;
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = Database.getConnection();
-
-
-            String query = "SELECT salt FROM customer WHERE id=?";
-            statement = connection.prepareStatement(query);
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-            Logger.getLogger(this.getClass().getName()).log(Level.FINE, "findByEmail SQL Query: " + query);
-
-
-            if (resultSet.next()) {
-                salt = resultSet.getString("salt");
-            }
-        } catch (SQLException exception) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, exception);
-        } finally {
-            Database.close(connection, statement, resultSet);
-        }
-        return salt;
     }
 }

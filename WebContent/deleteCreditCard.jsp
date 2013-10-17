@@ -15,6 +15,11 @@
             </c:forEach>
         </c:if>
         <input name="id" value="${creditCard.id}" type="hidden" />
-        <div><input type="submit" value="Confirm" /></div>
+        <br>
+        <div>
+        	<div>Confirm the account password to delete the card.</div>
+        	<div>Password: <input id="password" name="password" type="password" value="" /></div>
+     		<div><input type="submit" value="Confirm" /></div>
+        </div>
     </form>
 </div>

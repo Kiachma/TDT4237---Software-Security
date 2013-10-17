@@ -1,5 +1,6 @@
 package amu.action;
 
+import amu.Authentication;
 import amu.Utils;
 import amu.database.CreditCardDAO;
 import amu.model.CreditCard;
@@ -16,12 +17,14 @@ import javax.servlet.http.HttpSession;
 
 class AddCreditCardAction implements Action {
 
-    private Map<String, String> messages = null;
+    private static final String CARDHOLDER_NAME = "cardholderName";
+	private Map<String, String> messages = null;
+	private Customer customer;
 
     @Override
     public ActionResponse execute(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
-        Customer customer = (Customer) session.getAttribute("customer");
+        customer = (Customer) session.getAttribute("customer");
 
         if (customer == null) {
             ActionResponse actionResponse = new ActionResponse(ActionResponseType.REDIRECT, "loginCustomer");
@@ -46,13 +49,13 @@ class AddCreditCardAction implements Action {
                     customer,
                     request.getParameter("creditCardNumber"),
                     expiryDate,
-                    request.getParameter("cardholderName"));
+                    request.getParameter(CARDHOLDER_NAME));
 
             Map<String, String> values = new HashMap<>();
             request.setAttribute("values", values);
             values.put("creditCardNumber", request.getParameter("creditCardNumber"));
             values.put("expiryDate", request.getParameter("expiry"));
-            values.put("cardholderName", request.getParameter("cardholderName"));
+            values.put(CARDHOLDER_NAME, request.getParameter(CARDHOLDER_NAME));
 
             if (creditCardDAO.add(creditCard)) {
                 return new ActionResponse(ActionResponseType.REDIRECT, "viewCustomer");
@@ -66,7 +69,19 @@ class AddCreditCardAction implements Action {
     }
 
     private boolean validateInput(HttpServletRequest request) {
-        return Utils.validateInputLengths(request, messages) && validateCreditCard(request);
+        boolean inputLengthsOK = Utils.validateInputLengths(request, messages);
+        boolean nameAlphanum = Utils.validateAlphaNum(request.getParameter(CARDHOLDER_NAME));
+        if (!nameAlphanum) {
+        	messages.put("error", "Name field cannot contain special characters");
+        }
+        boolean passwordOK = false;
+        if (inputLengthsOK && nameAlphanum) {
+        	passwordOK = Authentication.verifyPassword(customer, request.getParameter("password"));
+        	if (!passwordOK) {
+        		messages.put("error", "Authentication error");
+        	}
+        }
+		return inputLengthsOK && nameAlphanum && passwordOK && validateCreditCard(request);
     }
 
     private boolean validateCreditCard(HttpServletRequest request) {

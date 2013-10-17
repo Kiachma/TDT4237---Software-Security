@@ -28,26 +28,66 @@ class DeleteCreditCardAction implements Action {
         CreditCardDAO creditCardDAO = new CreditCardDAO();
         CreditCard creditCard;
 
-        if (request.getMethod().equals("POST")) {
+        int ccId = -1;//always invalid ID
+        try {
+        	ccId =  Integer.parseInt(request.getParameter("id"));
+        } catch (NumberFormatException e) {}//ignore
+        
+		if (request.getMethod().equals("POST")) {
             List<String> messages = new ArrayList<String>();
             request.setAttribute("messages", messages);
+            
+            //invalid credit card id
+            if (ccId < 0) {
+            	return logBadIDAndLogoutCustomer(session, customer);
+            }
+            
+            boolean passwordOk = Authentication.verifyPassword(customer, request.getParameter("password"));
+			if (!passwordOk) {
+				messages.add("Authentication error");
+        		ActionResponse actionResponse = new ActionResponse(ActionResponseType.REDIRECT, "deleteCreditCard");
+        		actionResponse.addParameter("id", "" + ccId);
+        		actionResponse.addParameter("e", "auth");
+        		return actionResponse;
+        	}
 
-            if (creditCardDAO.delete(Integer.parseInt(request.getParameter("id")))) {
+            if (creditCardDAO.delete(ccId)) {
                 return new ActionResponse(ActionResponseType.REDIRECT, "viewCustomer");
             }
 
             messages.add("An error occured.");
         }
 
-        // (request.getMethod().equals("GET")) 
-        creditCard = creditCardDAO.read(Integer.parseInt(request.getParameter("id")));
+        // (request.getMethod().equals("GET"))
+		String errors = request.getParameter("e"); 
+		if (errors != null) {
+			List<String> messages = new ArrayList<String>();
+            request.setAttribute("messages", messages);
+            String m = "";
+            switch(errors) {
+            case "auth" : {
+            	m = "Authentication issue";
+            	break;
+            }
+            default : {m = "An error occured";}
+            }
+            messages.add(m);
+		}
+		
+		//avoid trying to create a card if the id isn't a number
+        creditCard = (ccId < 0) ? null : creditCardDAO.read(ccId);
         if (creditCard!=null && creditCard.getCustomer().getId() == customer.getId()) {
             request.setAttribute("creditCard", creditCard);
             return new ActionResponse(ActionResponseType.FORWARD, "deleteCreditCard");
         } else {
-            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Customer ("+customer.getId()+") tried to delete an invalid credit card");
-            Authentication.logOutCustomer(session, customer);
-            return new ActionResponse(ActionResponseType.REDIRECT, "viewCustomer");
+            return logBadIDAndLogoutCustomer(session, customer);
         }
     }
+
+	private ActionResponse logBadIDAndLogoutCustomer(HttpSession session,
+			Customer customer) {
+		Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Customer ("+customer.getId()+") tried to delete an invalid credit card");
+		Authentication.logOutCustomer(session, customer);
+		return new ActionResponse(ActionResponseType.REDIRECT, "viewCustomer");
+	}
 }

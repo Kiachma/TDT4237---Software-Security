@@ -13,6 +13,11 @@
             <div><label for="address">Edit address: </label></div>
             <textarea id="address" name="address" rows="5" cols="40">${address.address}</textarea>
         </div>
+        <br>
+        <div>
+        	<div>Confirm account password to change the address:</div>
+        	<div><input id="password" name="password" type="password" value=""></div>
+        </div>
         <div><input type="submit" value="Submit" /></div>
     </form>
 </div>

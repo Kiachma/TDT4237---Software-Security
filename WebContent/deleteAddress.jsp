@@ -11,6 +11,9 @@
             </c:forEach>
         </c:if>
         <input name="id" value="${address.id}" type="hidden" />
+        <div>Confirm account password to add address:</div>
+        <div><input id="password" name="password" type="password" value=""></div>
+        
         <div><input type="submit" value="Confirm" /></div>
     </form>
 </div>
