@@ -1,20 +1,23 @@
 package amu.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Book implements Serializable {
+
     private int id;
     private Title title;
     private Publisher publisher;
     private List<Author> author;
-    private String published; 
+    private String published;
     private int edition;
-    private String binding; 
+    private String binding;
     private String isbn10;
     private String isbn13;
     private String description;
-    private float price; 
+    private float price;
+    private List<Review> reviews;
 
     public int getId() {
         return id;
@@ -102,5 +105,20 @@ public class Book implements Serializable {
 
     public void setEdition(int edition) {
         this.edition = edition;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        if (reviews == null) {
+            reviews = new ArrayList<>();
+        }
+        this.reviews.add(review);
     }
 }
