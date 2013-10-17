@@ -3,6 +3,8 @@ package amu.action;
 import amu.Authentication;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
 import amu.Config;
+import amu.database.CaptchaCountDAO;
 import amu.database.CustomerDAO;
 import amu.model.Customer;
 
@@ -41,14 +44,20 @@ class LoginCustomerAction implements Action {
         request.getSession().invalidate();
         HttpSession session = request.getSession(true);
         String email = request.getParameter("email");
+        Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Login attempt with username "+email);
+        
         String passwd = request.getParameter("password");
         
         Map<String, String> messages = new HashMap<String, String>();
         request.setAttribute("messages", messages);
-        Integer count = (Integer) session.getAttribute("loginCount");
-        count = count == null ? 1 : count;
-        session.setAttribute("loginCount", count + 1);
+//        Integer count = (Integer) session.getAttribute("loginCount");
+//        count = count == null ? 1 : count;
+//        session.setAttribute("loginCount", count + 1);
+//        
         
+        CaptchaCountDAO captchacountDAO = new CaptchaCountDAO();
+        int count = captchacountDAO.getCount(email);
+        captchacountDAO.incrementCount(email);
         if (count >= 3 && !validateCaptcha(request)) {
             messages.put("email", "Wrong captcha.");
             return new ActionResponse(ActionResponseType.FORWARD,
@@ -62,7 +71,7 @@ class LoginCustomerAction implements Action {
         if (customer != null) {
             if (customer.getActivationToken() == null) {
                 if (checkPasswd(passwd, customer)) {
-                    session.setAttribute("loginCount", 0);
+                    captchacountDAO.resetCount(email);
                     session.setAttribute("customer", customer);
                     if (ActionFactory.hasKey(request.getParameter("from"))) {
                         return new ActionResponse(ActionResponseType.REDIRECT,
