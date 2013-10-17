@@ -83,11 +83,14 @@ public final class CaptchaCountDAO {
         PreparedStatement statement = null;
         String query = "UPDATE captchacount SET count = 0 WHERE email = ?";
         try{
+            connection = Database.getConnection();
             statement = connection.prepareStatement(query);
             statement.setString(1, email);
             statement.executeUpdate();
         }catch(SQLException e){
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "SQL Eception");
+        }finally{
+            Database.close(connection, statement);
         }
         
     }

@@ -16,6 +16,7 @@ import amu.Config;
 import amu.database.CaptchaCountDAO;
 import amu.database.CustomerDAO;
 import amu.model.Customer;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 class LoginCustomerAction implements Action {
 
@@ -57,6 +58,7 @@ class LoginCustomerAction implements Action {
         
         CaptchaCountDAO captchacountDAO = new CaptchaCountDAO();
         int count = captchacountDAO.getCount(email);
+        session.setAttribute("loginCount", count);
         captchacountDAO.incrementCount(email);
         if (count >= 3 && !validateCaptcha(request)) {
             messages.put("email", "Wrong captcha.");
