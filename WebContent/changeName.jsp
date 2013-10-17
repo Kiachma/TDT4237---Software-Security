@@ -17,7 +17,6 @@
 	        	<td><input id="password" name="password" type="password" value="" /></td>
        		</tr>
         </table>
-
         <div><input type="submit" value="Submit" /></div>
     </form>
 </div>

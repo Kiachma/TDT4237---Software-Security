@@ -37,19 +37,4 @@ class CustomerSupportAction implements Action {
         return new ActionResponse(ActionResponseType.FORWARD, "customerSupport");
     }
     
-    private boolean validateField(String field){
-        if(field==null){
-            return false;
-        }
-        char[] badChars = new char[]{'&', '<', '>', '"', 39, 47};
-        for(int i=0;i<badChars.length;i++){
-            for(int j=0; j<field.length(); j++){
-                if (badChars[i]==field.charAt(j)){
-                    return false;
-                }   
-            }
-            
-        }
-        return true;
-    }
 }
