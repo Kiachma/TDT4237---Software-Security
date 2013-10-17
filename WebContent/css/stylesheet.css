@@ -65,3 +65,10 @@ textarea{
 .error{
     color: red
 }
+
+#errorPage{
+    max-width:100%; 
+    max-height:100%;
+    margin:auto;
+    display:block;
+}
