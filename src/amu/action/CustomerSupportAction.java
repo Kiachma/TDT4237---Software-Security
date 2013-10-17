@@ -1,6 +1,7 @@
 package amu.action;
 
 import amu.Mailer;
+import amu.Utils;
 import amu.model.Customer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +23,7 @@ class CustomerSupportAction implements Action {
         if (request.getMethod().equals("POST")) {
             String subject = request.getParameter("subject");
             String content = request.getParameter("content");
-            if (validateField(subject) && validateField(content)){
+            if (Utils.validateAlphaNum(subject) && Utils.validateAlphaNum(content) ){
                 Mailer.send(request.getParameter("department"), 
                     request.getParameter("subject"), 
                     request.getParameter("content"), 
