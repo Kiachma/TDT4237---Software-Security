@@ -80,19 +80,5 @@ class ChangeNameAction implements Action {
      * '
      * /
      */
-    private boolean validateName(String name){
-        if(name==null){
-            return false;
-        }
-        char[] badChars = new char[]{'&', '<', '>', '"', 39, 47};
-        for(int i=0;i<badChars.length;i++){
-            for(int j=0; j<name.length(); j++){
-                if (badChars[i]==name.charAt(j)){
-                    return false;
-                }   
-            }
-            
-        }
-        return true;
-    }
+
 }
