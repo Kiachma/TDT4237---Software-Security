@@ -25,4 +25,12 @@
             <include-coda>/WEB-INF/jspf/footer.jspf</include-coda>
         </jsp-property-group>
     </jsp-config>
+    <error-page>
+        <exception-type>UnhandledException</exception-type>
+        <location>/GenericError.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/GenericError.jsp</location>
+    </error-page>
 </web-app>
