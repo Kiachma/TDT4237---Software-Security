@@ -29,6 +29,7 @@ public final class BookDAO {
             
             if (resultSet.next()) {
                 AuthorDAO authorDAO = new AuthorDAO(); // TODO:
+                ReviewDAO reviewDAO = new ReviewDAO();
                 
                 book = new Book();
                 book.setId(resultSet.getInt("book.id"));
@@ -42,6 +43,7 @@ public final class BookDAO {
                 book.setDescription(resultSet.getString("book.description"));
                 book.setAuthor(authorDAO.findByBookID(resultSet.getInt("book.id")));
                 book.setPrice(resultSet.getFloat("book.price"));
+                book.setReviews(reviewDAO.findBybookId(resultSet.getInt("book.id")));
                 // TODO: Reviews, Categories
             }
         } catch (SQLException exception) {

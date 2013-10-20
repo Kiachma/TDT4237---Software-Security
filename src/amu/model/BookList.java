@@ -5,9 +5,9 @@ import java.util.List;
 
 public class BookList {
 
-    public String title;
-    public String description;
-    public List<BookListItem> books;
+    private String title;
+    private String description;
+    private List<BookListItem> books;
 
     public List getBooks() {
         return books;
