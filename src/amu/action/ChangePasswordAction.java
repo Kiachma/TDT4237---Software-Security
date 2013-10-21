@@ -33,8 +33,7 @@ class ChangePasswordAction implements Action {
             List<String> messages = new ArrayList<String>();
             request.setAttribute("messages", messages);
             String oldPassword = request.getParameter("oldPassword");
-            String salt = customerDAO.getSalt(customer.getId());
-            if (!Authentication.hashPassword(oldPassword, salt).equals(customer.getPassword())) {
+            if (!Authentication.verifyPassword(customer, oldPassword)) {
                 messages.add("Wrong old password");
                 return new ActionResponse(ActionResponseType.FORWARD, "changePassword");
             }
@@ -53,15 +52,8 @@ class ChangePasswordAction implements Action {
             }
 
             // Validation OK, do business logic
-            try {
-                salt = Authentication.generateSalt();
-                customer.setSalt(salt);
-                customer.setPassword(Authentication.hashPassword(password[0], salt));
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(ChangePasswordAction.class.getName()).log(Level.SEVERE, null, ex);
-                messages.add("An error occured.");
-                return new ActionResponse(ActionResponseType.FORWARD, "changePassword");
-            }
+                customer.setPassword(Authentication.hashPassword(password[0]));
+            
             if (customerDAO.edit(customer) == false) {
                 messages.add("An error occured.");
                 return new ActionResponse(ActionResponseType.FORWARD, "changePassword");
