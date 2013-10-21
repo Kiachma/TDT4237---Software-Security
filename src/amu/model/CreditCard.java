@@ -1,6 +1,8 @@
 package amu.model;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
+import org.jasypt.util.text.StrongTextEncryptor;
 
 public class CreditCard {
 
@@ -21,7 +23,7 @@ public class CreditCard {
     public CreditCard(Customer customer, String creditCardNumber, Calendar expiryDate, String cardholderName) {
         this.id = null;
         this.customer = customer;
-        this.creditCardNumber = creditCardNumber;
+        this.creditCardNumber = encryptCCNumber(creditCardNumber);
         this.expiryDate = expiryDate;
         this.cardholderName = cardholderName;
     }
@@ -34,16 +36,21 @@ public class CreditCard {
         return customer;
     }
 
-    public String getCreditCardNumber() {
+    public String getEncryptedCreditCardNumber() {
         return creditCardNumber;
+    }
+    
+    public String getDecryptedCreditCardNumber() {
+        return decryptCCNumber(creditCardNumber);
     }
 
     public String getMaskedCreditCardNumber() {
-        StringBuilder maskedCreditCardNumber = new StringBuilder(creditCardNumber.length());
-        for (int i = 0; i < creditCardNumber.length(); i++)
+	String deCryptedCC = getDecryptedCreditCardNumber();
+        StringBuilder maskedCreditCardNumber = new StringBuilder(deCryptedCC.length());
+        for (int i = 0; i < deCryptedCC.length(); i++)
         {
-            if (i >= creditCardNumber.length() - 4) {
-                maskedCreditCardNumber.append(creditCardNumber.charAt(i));
+            if (i >= deCryptedCC.length() - 4) {
+                maskedCreditCardNumber.append(deCryptedCC.charAt(i));
             } else {
                 maskedCreditCardNumber.append('*');
             }
@@ -57,5 +64,23 @@ public class CreditCard {
 
     public String getCardholderName() {
         return cardholderName;
+    }
+    
+    private String encryptCCNumber(String ccNumber){
+	
+	StrongTextEncryptor decimalNumberEncryptor = new StrongTextEncryptor();
+	decimalNumberEncryptor.setPassword(getCustomer().getPassword());
+	return decimalNumberEncryptor.encrypt(ccNumber);
+    } 
+    
+    private String decryptCCNumber(String ccNumber){
+	
+	StrongTextEncryptor decimalNumberEncryptor = new StrongTextEncryptor();
+	decimalNumberEncryptor.setPassword(getCustomer().getPassword());
+	return decimalNumberEncryptor.decrypt(ccNumber);
+    }
+
+    public void setCreditCardNumber(String enCryptedNumber) {
+	this.creditCardNumber=enCryptedNumber;
     }
 }

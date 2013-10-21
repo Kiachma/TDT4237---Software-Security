@@ -2,3 +2,4 @@
 00001_added_salt            14.10.2013
 00002_extension_models      17.10.2013
 00003_removed_salt          21.10.2013
+00004_changed_ccnumber_type 21.10.2013
