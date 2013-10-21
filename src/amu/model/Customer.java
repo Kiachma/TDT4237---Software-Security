@@ -10,7 +10,6 @@ public class Customer implements Serializable {
     private String password;
     private String name;
     private String activationToken = null;
-    private String salt;
 
     public int getId() {
         return id;
@@ -52,11 +51,4 @@ public class Customer implements Serializable {
         this.activationToken = activationToken;
     }
 
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
 }
