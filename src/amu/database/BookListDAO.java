@@ -44,6 +44,15 @@ public final class BookListDAO {
         }
         return false;
     }
+    
+    /*
+     * Adds the received book to the list in the database
+     * 
+     */
+    public boolean addBookToList(int titleID, int booklistID){
+        
+        return false;
+    }
     /*
      * Return a booklist object containing all the booklistitems in 
      * that booklist.

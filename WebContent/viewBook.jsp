@@ -1,5 +1,12 @@
 <div class="container">
     <h1>Book</h1>
+    <c:if test="${not empty messages}">
+            <c:forEach var="message" items="${messages}">
+                <div>
+                    <span class="container">${message}</span>
+                </div>
+            </c:forEach>
+    </c:if>
     <c:choose>
         <c:when test="${empty book}">
             <h2>Book not found!</h2>
@@ -34,4 +41,19 @@
             </div>
         </c:otherwise>
     </c:choose>
+    <br>
+    <br>
+    <c:if test="${not empty customer}" >
+        <form action="viewBook.do" method="post">
+            <div>Add to one of your book-lists</div>
+            <select id="booklist_selection" name="booklist_selection">
+                <c:forEach var="booklist" items="${booklists}" varStatus="counter">
+                    <option value="${booklist.key}">${booklist.value}</option>
+                </c:forEach>
+                <input type="hidden" name="book_id" value="${book.title.id}">
+            </select>
+            <div><input type="submit" value="Add"></div>
+        </form>
+    </c:if>
+    
 </div>
