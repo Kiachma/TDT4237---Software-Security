@@ -1,8 +1,9 @@
 package amu.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 public class Review {
 
@@ -14,64 +15,88 @@ public class Review {
     private List<ReviewVote> reviewVotes;
 
     public Integer getRating() {
-        return rating;
+	return rating;
     }
 
     public void setRating(Integer rating) {
-        this.rating = rating;
+	this.rating = rating;
     }
 
     public String getReview() {
-        return review;
+	return review;
     }
 
     public void setReview(String review) {
-        this.review = review;
+	this.review = review;
     }
 
     public Customer getAuthor() {
-        return author;
+	return author;
     }
 
     public void setAuthor(Customer author) {
-        this.author = author;
+	this.author = author;
     }
 
     public Integer getId() {
-        return id;
+	return id;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+	this.id = id;
     }
 
     public List<ReviewVote> getReviewVotes() {
-        return reviewVotes;
+	return reviewVotes;
     }
 
     public void setReviewVotes(List<ReviewVote> reviewVotes) {
-        this.reviewVotes = reviewVotes;
+	this.reviewVotes = reviewVotes;
     }
-    
-    public void addReviewVote(ReviewVote reviewVote){
-        if(reviewVotes==null){
-            reviewVotes = new ArrayList<>();
-        }
-        reviewVotes.add(reviewVote);
+
+    public void addReviewVote(ReviewVote reviewVote) {
+	if (reviewVotes == null) {
+	    reviewVotes = new ArrayList<>();
+	}
+	reviewVotes.add(reviewVote);
     }
 
     public Book getBook() {
-        return book;
+	return book;
     }
 
     public void setBook(Book book) {
-        this.book = book;
+	this.book = book;
     }
-    
-    
-    
-    
 
+    public int getUpVotes() {
+	int sum = 0;
+	for (ReviewVote reviewVote : getReviewVotes()) {
+	    if (reviewVote.getHelpful()) {
+		sum++;
+	    }
+	}
+	return sum;
+    }
 
-    
+    public int getDownVotes() {
+	int sum = 0;
+	for (ReviewVote reviewVote : getReviewVotes()) {
+	    if (reviewVote.getUnHelpful()) {
+		sum++;
+	    }
+	}
+	return sum;
+    }
+
+    public Map<Integer, Boolean> getVoters() {
+	Map<Integer, Boolean> voterMap = new HashMap<>();
+	for (ReviewVote reviewVote : reviewVotes) {
+	    voterMap.put(reviewVote.getCustomer().getId(), reviewVote.getHelpful());
+
+	}
+	return voterMap;
+
+    }
+
 }

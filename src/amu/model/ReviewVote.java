@@ -2,9 +2,9 @@ package amu.model;
 
 public class ReviewVote {
 
-    public Boolean vote;
-    public Review review;
-    public Customer customer;
+    private Boolean vote;
+    private Review review;
+    private Customer customer;
 
     public Boolean getHelpful() {
         return vote;

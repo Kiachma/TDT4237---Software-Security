@@ -98,7 +98,6 @@ class AddCreditCardAction implements Action {
             messages.put("creditCardNumber", "Credit card has to be between 1 and 16 digits");
             return false;
         }
-        messages.put("creditCardNumber", null);
         return true;
     }
 
