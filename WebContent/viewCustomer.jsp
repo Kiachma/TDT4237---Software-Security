@@ -49,4 +49,13 @@
             </div>
         </c:forEach>
     </div>
+    <div>
+        <h2>Your book lists</h2>
+        <c:forEach var="booklist" items="${booklists}" varStatus="counter">
+            <div><a href="viewBookList.do?id=${booklist.key}">${booklist.value}</a></div>
+        </c:forEach> 
+    </div>
+    <div>
+        <a href="addBookList.do">+ add list</a>
+    </div>
 </div>

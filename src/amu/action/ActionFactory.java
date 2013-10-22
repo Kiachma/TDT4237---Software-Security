@@ -53,6 +53,8 @@ public class ActionFactory implements ServletContextListener {
         map.put("changePassword", new ChangePasswordAction());
         map.put("changeEmail", new ChangeEmailAction());
         map.put("changeName", new ChangeNameAction());
+        map.put("viewBookList", new ViewBookListAction());
+        map.put("addBookList", new AddBookListAction());
         
         // Customer support
         map.put("customerSupport", new CustomerSupportAction());

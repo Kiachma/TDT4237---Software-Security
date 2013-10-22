@@ -3,14 +3,18 @@ package amu.action;
 import amu.database.AddressDAO;
 import amu.database.CreditCardDAO;
 import amu.database.OrderDAO;
+import amu.database.BookListDAO;
 import amu.model.Address;
 import amu.model.CreditCard;
 import amu.model.Customer;
 import amu.model.Order;
+import amu.model.BookList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.lang.Integer;
 
 class ViewCustomerAction implements Action {
 
@@ -36,7 +40,12 @@ class ViewCustomerAction implements Action {
             OrderDAO orderDAO = new OrderDAO();
             List<Order> orders = orderDAO.browse(customer);
             request.setAttribute("orders", orders);
-
+            
+            BookListDAO booklistDAO = new BookListDAO();
+            HashMap booklists = booklistDAO.getBookListsTitles(customer);
+            session.setAttribute("booklists", booklists);
+            request.setAttribute("booklists", booklists);
+            System.out.println("Booklists: "+booklists.get(1));
             return new ActionResponse(ActionResponseType.FORWARD, "viewCustomer");
         }
     }
