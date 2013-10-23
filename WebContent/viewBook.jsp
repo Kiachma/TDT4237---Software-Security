@@ -36,19 +36,24 @@
 			</form>
 		    </div>
 		    <h3>Reviews</h3>
-		    <c:if test="${not empty customer}" >
+		    <c:if test="${not empty customer}">
 		    <div class="col-lg-offset-4 col-lg-8">
 			<form class="form-horizontal" role="form" action="addReview.do" method="post">
 			    <input type="hidden" name="isbn" value="${book.isbn13}" />
+			    <input type="hidden" name="reviewId" value="${book.customerReviewMap[customer.id].id}" />
 			    <div class="form-group <c:if test="${not empty messages.vote}">has-error</c:if>"> 
 				<label class="control-label col-lg-2" for="vote" > Vote (1-5) </label>
-				<div class="col-lg-1">
+				<div class="col-lg-2">
 				    <select class="form-control " id ="vote" name="vote">
-					<option value="1">1</option>
+
+					<c:forEach begin="1" end="5" varStatus="loop">
+					    <option <c:if test="${loop.index==book.customerReviewMap[customer.id].rating}"> selected </c:if> value="${loop.index}">${loop.index}</option>
+					</c:forEach>
+<!--					<option value="1">1</option>
 					<option value="2">2</option>
 					<option value="3">3</option>
 					<option value="4">4</option>
-					<option value="5">5</option>
+					<option value="5">5</option>-->
 				    </select>
 				</div>
 			    </div>
@@ -60,6 +65,7 @@
 				<label class="control-label col-lg-2" for ="review" >Review</label>
 				<div class="col-lg-5">
 				    <textarea class="form-control"  id="review" name="review" >
+					${book.customerReviewMap[customer.id].review}
 				    </textarea>
 				</div>
 				<c:if test="${not empty messages.review}">
