@@ -77,7 +77,7 @@ class LoginCustomerAction implements Action {
                     BookListDAO booklistDAO = new BookListDAO();
                     HashMap booklists = booklistDAO.getBookListsTitles(customer);
                     session.setAttribute("booklists", booklists);
-                    request.setAttribute("booklists", booklists);
+                    
                     captchacountDAO.resetCount(email);
                     session.setAttribute("customer", customer);
                     if (ActionFactory.hasKey(request.getParameter("from"))) {

@@ -24,7 +24,8 @@ class ViewBookListAction implements Action{
         
         BookListDAO booklistDAO = new BookListDAO();
         int booklistID = (int) Integer.parseInt(request.getParameter("id"));
-        BookList booklist = booklistDAO.getListByID(booklistID);
+        BookList booklist = booklistDAO.getListByID(booklistID, customer.getId());
+        System.out.println("The Booklist: "+booklist);
         if(booklist!= null){
             request.setAttribute("booklist", booklist);
         }

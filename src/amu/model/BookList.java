@@ -42,4 +42,16 @@ public class BookList {
     public void setBooks(List<BookListItem> books) {
         this.books = books;
     }
+
+    @Override
+    public String toString() {
+        List books = getBooks();
+        String tostring = "";
+        for(Object book : books){
+            tostring += book;
+        }
+        return tostring;
+    }
+    
+    
 }

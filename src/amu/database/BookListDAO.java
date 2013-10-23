@@ -57,7 +57,7 @@ public final class BookListDAO {
      * Return a booklist object containing all the booklistitems in 
      * that booklist.
      */
-    public BookList getListByID(int id){
+    public BookList getListByID(int id, int customer_id){
         BookList booklist = new BookList();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -86,12 +86,15 @@ public final class BookListDAO {
                 + "FROM title, book, booklist, booklist_x_book "
                 + "WHERE title.id=book.title_id "
                 + "AND book.title_id=booklist_x_book.book_title_id "
-                + "AND booklist_x_book.booklist_id = ?";
+                + "AND booklist_x_book.booklist_id = ? "
+                + "AND booklist.customer_id = ? "
+                + "AND booklist_x_book.booklist_id = booklist.booklist_id";
         
         try{
             connection = Database.getConnection();
             statement = connection.prepareStatement(query);
             statement.setInt(1, id);
+            statement.setInt(2, customer_id);
             results = statement.executeQuery();
             
             while(results.next()){

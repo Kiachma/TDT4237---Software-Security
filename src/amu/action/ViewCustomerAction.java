@@ -44,8 +44,7 @@ class ViewCustomerAction implements Action {
             BookListDAO booklistDAO = new BookListDAO();
             HashMap booklists = booklistDAO.getBookListsTitles(customer);
             session.setAttribute("booklists", booklists);
-            request.setAttribute("booklists", booklists);
-            System.out.println("Booklists: "+booklists.get(1));
+            
             return new ActionResponse(ActionResponseType.FORWARD, "viewCustomer");
         }
     }

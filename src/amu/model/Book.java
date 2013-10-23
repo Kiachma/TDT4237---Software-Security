@@ -121,4 +121,11 @@ public class Book implements Serializable {
         }
         this.reviews.add(review);
     }
+
+    @Override
+    public String toString() {
+        return title.getName();
+    }
+    
+    
 }
