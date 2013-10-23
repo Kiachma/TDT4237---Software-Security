@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
 import amu.Config;
+import amu.database.BookListDAO;
 import amu.database.CaptchaCountDAO;
 import amu.database.CustomerDAO;
 import amu.model.Customer;
@@ -73,6 +74,10 @@ class LoginCustomerAction implements Action {
         if (customer != null) {
             if (customer.getActivationToken() == null) {
                 if (checkPasswd(passwd, customer)) {
+                    BookListDAO booklistDAO = new BookListDAO();
+                    HashMap booklists = booklistDAO.getBookListsTitles(customer);
+                    session.setAttribute("booklists", booklists);
+                    request.setAttribute("booklists", booklists);
                     captchacountDAO.resetCount(email);
                     session.setAttribute("customer", customer);
                     if (ActionFactory.hasKey(request.getParameter("from"))) {
