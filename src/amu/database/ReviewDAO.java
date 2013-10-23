@@ -109,4 +109,30 @@ public final class ReviewDAO {
 
         return false;
     }
+
+    public boolean edit(Review review) {
+	Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = Database.getConnection();
+
+            String query = "update review set review=?, rating=? where id=?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, review.getReview());
+            statement.setInt(2, review.getRating());
+	    statement.setInt(3, review.getId());
+
+            if (statement.executeUpdate() > 0) {
+                return true;
+            }
+        } catch (SQLException exception) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, exception);
+        } finally {
+            Database.close(connection, statement, resultSet);
+        }
+
+        return false;
+    }
 }
