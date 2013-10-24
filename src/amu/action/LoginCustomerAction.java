@@ -115,6 +115,6 @@ class LoginCustomerAction implements Action {
     
     private boolean checkPasswd(String passwd, Customer customer) {
         customerDAO = new CustomerDAO();
-        return customer.getPassword().equals(Authentication.hashPassword(passwd, customerDAO.getSalt(customer.getId())));
+        return Authentication.verifyPassword(customer, passwd);
     }
 }

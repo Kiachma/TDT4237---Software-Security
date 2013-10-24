@@ -50,7 +50,7 @@ public class Utils {
 
     public static boolean validateInputLengths(HttpServletRequest request, Map<String, String> messages) {
         Enumeration<String> names = request.getParameterNames();
-        while (names.hasMoreElements()) {
+        while (names.hasMoreElements()) {	    
             String field = names.nextElement();
             String friendlyField = getFriendlyFieldName(field);
             String input = request.getParameter(field);

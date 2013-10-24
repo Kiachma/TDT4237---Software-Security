@@ -2,7 +2,9 @@ package amu.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Book implements Serializable {
 
@@ -128,4 +130,14 @@ public class Book implements Serializable {
     }
     
     
+    
+    public Map<Integer, Review> getCustomerReviewMap() {
+	Map<Integer, Review> reviewerMap = new HashMap<>();
+	for (Review review : reviews) {
+	    reviewerMap.put(review.getAuthor().getId(),review );
+
+	}
+	return reviewerMap;
+
+    }
 }

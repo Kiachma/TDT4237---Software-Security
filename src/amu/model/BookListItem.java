@@ -2,9 +2,9 @@ package amu.model;
 
 public class BookListItem {
 
-  public BookList list;
+  private BookList list;
 
-  public Book book;
+  private Book book;
 
     public BookList getList() {
         return list;

@@ -1,6 +1,7 @@
 # Directories #
 /build/
 /bin/
+/WebContent/WEB-INF/lib/jasypt-1.9.1/bin
 
 target/
 # OS Files #
@@ -62,3 +63,4 @@ local.properties
 /nbproject/
 build.xml
 /WebContent/WEB-INF/glassfish-web.xml
+/dist/
