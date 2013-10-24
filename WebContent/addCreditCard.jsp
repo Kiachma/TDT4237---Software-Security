@@ -41,7 +41,7 @@
             /
             <select id="expiryDate" name="expiryYear">
                 <c:forEach var="year" items="${years}">
-                    <option value="${year}">${year}</option>
+                    <option value="${year}"><c:out value="${year}" /></option>
                 </c:forEach>
             </select>
             </td>

@@ -2,9 +2,9 @@
     <h1>Delete Credit Card</h1>
     <div>Do you want to delete the following credit card?</div>
     <div>
-        <div>Credit card number: ${creditCard.maskedCreditCardNumber}</div>
+        <div>Credit card number: <c:out value="${creditCard.maskedCreditCardNumber}"/></div>
         <div>Expiry date: <fmt:formatDate value="${creditCard.expiryDate.time}" type="date" dateStyle="short" /></div>
-        <div>Cardholder's name: ${creditCard.cardholderName}</div>
+        <div>Cardholder's name: <c:out value="${creditCard.cardholderName}"></div>
     </div>
     <form action="deleteCreditCard.do" method="post">
         <c:if test="${not empty messages}">

@@ -11,7 +11,7 @@
         <input name="id" value="${address.id}" type="hidden" />
         <div>
             <div><label for="address">Edit address: </label></div>
-            <textarea id="address" name="address" rows="5" cols="40">${address.address}</textarea>
+            <textarea id="address" name="address" rows="5" cols="40"><c:out value="${address.address}"/></textarea>
         </div>
         <br>
         <div>

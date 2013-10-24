@@ -1,6 +1,6 @@
 <div class="container">
 <h1>Change name</h1>
-    <div>Current name: ${customer.name}</div>
+    <div>Current name: <c:out value="${customer.name}" /> /div>
     <c:if test="${not empty messages}">
         <c:forEach var="message" items="${messages}">
             <div><span class="error">${message.value}</span></div>

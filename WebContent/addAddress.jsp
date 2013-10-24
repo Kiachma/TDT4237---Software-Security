@@ -13,7 +13,7 @@
         </c:if>
         <div>
             <div><label for="address">Add address: </label></div>
-            <textarea id="address" name="address" rows="5" cols="20">${address.address}</textarea>
+            <textarea id="address" name="address" rows="5" cols="20"><c:out value="${address.address}" /> </textarea>
         </div>
         <br>
         <div>

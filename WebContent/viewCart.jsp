@@ -7,8 +7,8 @@
         <c:otherwise>
             <form action="updateCart.do" method="post">
                 <c:forEach items="${cart.items}" var="item">
-                    <h3>${item.value.book.title.name}</h3>
-                    <div>Price: ${item.value.book.price}</div>
+                    <h3><c:out value="${item.value.book.title.name}"/></h3>
+                    <div>Price: <c:out value="${item.value.book.price}"/></div>
                     <input type="hidden" name="isbn" value="${item.value.book.isbn13}" />
                     <div> Quantity:
                         <input type="text" name="quantity" value="${item.value.quantity}" />
@@ -19,10 +19,10 @@
             </form>
             <c:choose>
                 <c:when test="${cart.numberOfItems == 1}">
-                    <div>Subtotal: ${cart.subtotal}</div>
+                    <div>Subtotal: <c:out value="${cart.subtotal}"/></div>
                 </c:when>
                 <c:otherwise>
-                    <div>Subtotal (${cart.numberOfItems} items): ${cart.subtotal}</div>
+                    <div>Subtotal (<c:out value="${cart.numberOfItems}"/> items): <c:out value="${cart.subtotal}"/></div>
                 </c:otherwise>
             </c:choose>
             <br />

@@ -5,8 +5,8 @@
     </div>
     <c:forEach var="address" items="${addresses}" varStatus="counter">
         <div>
-            <h3>Address #${counter.count}</h3>
-            <pre>${address.address}</pre>
+            <h3>Address #<c:out value="${counter.count}"/></h3>
+            <pre><c:out value="${address.address}"/></pre>
             <div><a href="selectShippingAddress.do?id=${address.id}">Select shipping address</a></div><br />
             <div>
                 <span><a href="editAddress.do?id=${address.id}">Edit</a></span>
