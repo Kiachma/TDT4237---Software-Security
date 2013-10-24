@@ -1,6 +1,6 @@
 <div class="container">
 <h1>Change Email</h1>
-    <div>Current email ${customer.email}</div>
+    <div>Current email <c:out value=">${customer.email}" /></div>
     <c:if test="${not empty messages}">
         <c:forEach var="message" items="${messages}">
             <div><span class="error">${message}</span></div>

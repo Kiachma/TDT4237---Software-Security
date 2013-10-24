@@ -6,24 +6,24 @@
 		    <div class = "index-item"><a href="debug/list_books.jsp">List books</a></div>
 	    </c:when>
 	    <c:otherwise>
-		<h2>${book.title.name}</h2>
+		<h2><c:out value="${book.title.name}"/></h2>
 		    <div>
 			<ul>
 			    <li>
 				<b>Authors:</b> 
 				<c:forEach items="${book.author}" var="author" varStatus="it">
-				    ${author.name}<c:if test="${!it.last}">, </c:if>
+				    <c:out value="${author.name}"/><c:if test="${!it.last}">, </c:if>
 				</c:forEach>
 			    </li>
-			    <li><b>Publisher:</b> ${book.publisher.name}</li>
-			    <li><b>Published:</b> ${book.published}</li>
-			    <li><b>Edition:</b> ${book.edition} (${book.binding})</li>
-			    <li><b>ISBN:</b> ${book.isbn13}</li>
-			    <li><b>Price:</b> ${book.price}</li>
+			    <li><b>Publisher:</b> <c:out value="${book.publisher.name}"/></li>
+			    <li><b>Published:</b> <c:out value="${book.published}"/></li>
+			    <li><b>Edition:</b> <c:out value="${book.edition}"/> (<c:out value="${book.binding}"/>)</li>
+			    <li><b>ISBN:</b> <c:out value="${book.isbn13}"/></li>
+			    <li><b>Price:</b> <c:out value="${book.price}"/>/li>
 			</ul>
 		    </div>
 		    <div>
-			${book.description}
+			<c:out value="${book.description}"/>
 		    </div>
 		    <div>
 			<form class="form-inline" action="addBookToCart.do" method="post">
@@ -65,7 +65,7 @@
 				<label class="control-label col-lg-2" for ="review" >Review</label>
 				<div class="col-lg-5">
 				    <textarea class="form-control"  id="review" name="review" >
-					${book.customerReviewMap[customer.id].review}
+					<c:out value="${book.customerReviewMap[customer.id].review}" /> 
 				    </textarea>
 				</div>
 				<c:if test="${not empty messages.review}">
@@ -85,7 +85,7 @@
 			    <div class="panel panel-default">
 				<div class="panel-heading">
 				    
-				    ${review.rating} - ${review.author.name}
+				    ${review.rating} - <c:out value="${review.author.name}" />
 				    
 				    <c:if test="${not empty customer}" >
 					<c:choose>
@@ -135,7 +135,7 @@
 				    </c:if>
 				</div>
 				<div class="panel-body">
-				    ${review.review}
+				    <c:out value="${review.review}" />
 				</div>
 			    </div>
 
@@ -149,7 +149,7 @@
                             <div>Add to one of your book-lists</div>
                             <select id="booklist_selection" name="booklist_selection">
                                 <c:forEach var="booklist" items="${booklists}" varStatus="counter">
-                                    <option value="${booklist.key}">${booklist.value}</option>
+                                    <option value="${booklist.key}"><c:out value="${booklist.value}"/></option>
                                 </c:forEach>
                                 <input type="hidden" name="book_title_id" value="${book.title.id}">
                                 <input type="hidden" name="book_isbn" value="${book.isbn13}">

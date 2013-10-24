@@ -1,7 +1,7 @@
 <div class="container">
     <h1>Delete Book-List</h1>
     <div>Do you want to delete the following book-list?</div>
-    <pre>${booklist.title}</pre>
+    <pre><c:out value="${booklist.title}" /></pre>
     <form action="deleteBookList.do" method="post">
         <c:if test="${not empty messages}">
             <c:forEach var="message" items="${messages}">
