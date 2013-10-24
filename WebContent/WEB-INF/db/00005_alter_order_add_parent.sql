@@ -1,0 +1,10 @@
+ALTER TABLE order 
+ADD COLUMN parent INT(10) UNSIGNED NULL AFTER status,
+ADD INDEX parent_idx (parent ASC);
+ALTER TABLE order 
+ADD CONSTRAINT parent
+  FOREIGN KEY (parent)
+  REFERENCES amudaria.order (id)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
