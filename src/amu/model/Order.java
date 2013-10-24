@@ -4,6 +4,11 @@ import java.util.Calendar;
 
 public class Order {
     
+	public static final int ORDER_DELIVERED = 2;
+    public static final int ORDER_SHIPPED = 1;
+    public static final int ORDER_PENDING = 0;
+    public static final int ORDER_CANCELED = -1;
+    
     private Integer id;
     private Customer customer;
     private Address address;
@@ -28,7 +33,7 @@ public class Order {
         this.address = address;
         this.createdDate = null;
         this.value = subtotal;
-        this.status = 0;
+        this.status = ORDER_PENDING;
     }
 
     public Integer getId() {
@@ -58,15 +63,16 @@ public class Order {
     public String getStatusText() {
         switch (status)
         {
-            case 2: 
+            case ORDER_DELIVERED: 
                 return "Delivered";
-            case 1:
+            case ORDER_SHIPPED:
                 return "Shipped";
-            case 0:
+            case ORDER_PENDING:
             default:
                 return "Pending";
-            case -1:
+            case ORDER_CANCELED:
                 return "Canceled";
         }
     }
+    
 }
