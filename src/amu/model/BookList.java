@@ -8,6 +8,7 @@ public class BookList {
     public String title;
     public String description;
     public List<BookListItem> books;
+    public int id;
 
     public List getBooks() {
         return books;
@@ -41,6 +42,14 @@ public class BookList {
 
     public void setBooks(List<BookListItem> books) {
         this.books = books;
+    }
+    
+    public void setID(int id){
+        this.id = id;
+    }
+    
+    public int getID(){
+        return this.id;
     }
 
     @Override

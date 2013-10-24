@@ -45,11 +45,102 @@ public final class BookListDAO {
         return false;
     }
     
+    public boolean removeBookList(int booklistID){
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet results = null;
+        boolean deletedList = false;
+        boolean deletedListedBooks = false;
+        
+        System.out.println("DELETE LIST:    "+booklistID);
+        String query = "DELETE FROM booklist WHERE booklist_id=? ";
+        try{
+            connection = Database.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, booklistID);
+            deletedList = (statement.executeUpdate()>0);
+        }catch(SQLException e){
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Exception in query: "+query);
+            e.printStackTrace();
+        }finally{
+            Database.close(connection, statement, results);
+        }
+        
+        removeListedBooks(booklistID);
+        
+        return deletedList;
+    }
+    
+    public boolean removeListedBooks(int booklistID){
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet results = null;
+        System.out.println("DELETE LISTED BOOKS:    "+booklistID);
+        String query = "DELETE FROM booklist_x_book WHERE booklist_id=? ";
+        try{
+            connection = Database.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, booklistID);
+            if(statement.executeUpdate()>0){
+                return true;
+            }
+        }catch(SQLException e){
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Exception in query: "+query);
+            e.printStackTrace();
+        }finally{
+            Database.close(connection, statement, results);
+        }
+        return false;
+    }
+    
+    public boolean removeBookFromList(int titleID, int booklistID){
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet results = null;
+        System.out.println("DELETE TITLE: "+titleID);
+        System.out.println("FROM LIST:    "+booklistID);
+        String query = "DELETE FROM booklist_x_book WHERE book_title_id=? AND booklist_id=? ";
+        try{
+            connection = Database.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, titleID);
+            statement.setInt(2, booklistID);
+            if(statement.executeUpdate()>0){
+                return true;
+            }
+        }catch(SQLException e){
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Exception in query: "+query);
+            e.printStackTrace();
+        }finally{
+            Database.close(connection, statement, results);
+        }
+        
+        return false;
+    }
+    
     /*
      * Adds the received book to the list in the database
      * 
      */
     public boolean addBookToList(int titleID, int booklistID){
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet results = null;
+        String query = "INSERT INTO booklist_x_book (book_title_id, booklist_id) VALUES(?,?)";
+        try{
+            connection = Database.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, titleID);
+            statement.setInt(2, booklistID);
+            if(statement.executeUpdate()>0){
+                return true;
+            }
+        }catch(SQLException e){
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Exception in query: "+query);
+            e.printStackTrace();
+        }finally{
+            Database.close(connection, statement, results);
+        }
         
         return false;
     }

@@ -52,7 +52,7 @@ public class AddBookListAction implements Action {
                 }
             }
             if (!lengthsPassed || !titlePassedAlpha || !descriptionPassedAlpha) {
-                return new ActionResponse(ActionResponseType.FORWARD, "changeName");
+                return new ActionResponse(ActionResponseType.FORWARD, "addBookList");
             }
             
             //create booklist and add it in database

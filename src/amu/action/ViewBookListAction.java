@@ -1,6 +1,7 @@
 
 package amu.action;
 
+import amu.database.BookDAO;
 import amu.database.BookListDAO;
 import amu.model.BookList;
 import amu.model.Customer;
@@ -23,11 +24,20 @@ class ViewBookListAction implements Action{
         }
         
         BookListDAO booklistDAO = new BookListDAO();
-        int booklistID = (int) Integer.parseInt(request.getParameter("id"));
+        int booklistID = Integer.parseInt(request.getParameter("id"));
+        
+        //if delete parameter is passed, delete the corresponding book from this list
+        String delete_isbn = null;
+        delete_isbn = request.getParameter("delete_isbn");
+        System.out.println(delete_isbn);
+        if(delete_isbn!=null){
+            int title_id = new BookDAO().findByISBN(delete_isbn).getTitle().getId();
+            booklistDAO.removeBookFromList(title_id, booklistID);
+        }
         BookList booklist = booklistDAO.getListByID(booklistID, customer.getId());
-        System.out.println("The Booklist: "+booklist);
         if(booklist!= null){
             request.setAttribute("booklist", booklist);
+            request.setAttribute("booklistkey", booklistID);
         }
         
         return new ActionResponse(ActionResponseType.FORWARD, "viewBookList");
