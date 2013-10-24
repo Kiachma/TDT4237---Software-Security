@@ -1,27 +1,20 @@
-CREATE TABLE `bookList` (
+CREATE TABLE `booklist` (
   `id` INT NOT NULL AUTO_INCREMENT ,
+  'customer_id' INT NOT NULL,
   `title` VARCHAR(60) NOT NULL,
   `description` VARCHAR(200) NULL,
-  PRIMARY KEY (`id`));
+  PRIMARY KEY (`id`)
+  CONSTRAINT 'fk_booklist'
+  FOREIGN KEY ('customer_id')
+  REFERENCES 'customer' ('id') );
 
+CREATE TABLE 'booklist_x_book' (
+    'booklist_id' INT NOT NULL,
+    'book_title_id' INT NOT NULL);
 
-CREATE TABLE `bookListItem` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `bookListId` INT NOT NULL,
-  `bookId` INT(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_bookListItem_1_idx` (`bookId` ASC),
-  INDEX `fk_bookListItem_2_idx` (`bookListId` ASC),
-  CONSTRAINT `fk_bookListItem_1`
-    FOREIGN KEY (`bookId`)
-    REFERENCES `book` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_bookListItem_2`
-    FOREIGN KEY (`bookListId`)
-    REFERENCES `bookList` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+CREATE TABLE 'captchacount' (
+    'email' VARCHAR(60) NOT NULL,
+    'count' INT);
 
 CREATE TABLE `review` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
