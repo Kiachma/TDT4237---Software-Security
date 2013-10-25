@@ -149,12 +149,12 @@ public final class BookListDAO {
      * Return a booklist object containing all the booklistitems in 
      * that booklist.
      */
-    public BookList getListByID(int id, int customer_id){
+    public BookList getListByID(int id){
         BookList booklist = new BookList();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet results = null;
-        String query = "SELECT title, description, is_public FROM booklist WHERE booklist_id = ?";
+        String query = "SELECT title, description, is_public, customer_id FROM booklist WHERE booklist_id = ?";
         
         try{
             connection = Database.getConnection();
@@ -166,6 +166,7 @@ public final class BookListDAO {
                 booklist.setTitle(results.getString("title"));
                 booklist.setDescription(results.getString("description"));
                 booklist.setIspublic(results.getBoolean("is_public"));
+                booklist.setCustomerID(results.getInt("customer_id"));
             }
         }catch(SQLException e){
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "SQL exception in "+query);
@@ -180,14 +181,12 @@ public final class BookListDAO {
                 + "WHERE title.id=book.title_id "
                 + "AND book.title_id=booklist_x_book.book_title_id "
                 + "AND booklist_x_book.booklist_id = ? "
-                + "AND booklist.customer_id = ? "
                 + "AND booklist_x_book.booklist_id = booklist.booklist_id";
         
         try{
             connection = Database.getConnection();
             statement = connection.prepareStatement(query);
             statement.setInt(1, id);
-            statement.setInt(2, customer_id);
             results = statement.executeQuery();
             
             while(results.next()){
@@ -259,16 +258,33 @@ public final class BookListDAO {
         }finally{
             Database.close(connection, statement, results);
         }
-        /*
-         * TODO:
-         * Fetch booklists from database
-         */
-//        try{
-//            
-//        }catch(SQLException e){
-//            
-//        }
         
+        return booklists;
+    }
+    
+    public HashMap getPublicBookListsTitles(){
+        HashMap booklists = new HashMap();
+        Connection connection = null;
+        ResultSet results = null;
+        PreparedStatement statement = null;
+
+        try{
+            connection = Database.getConnection();
+            String query = "SELECT booklist_id, title FROM booklist WHERE is_public = ?";
+            statement = connection.prepareStatement(query);
+
+            statement.setBoolean(1, true);
+
+            results = statement.executeQuery();
+
+            while(results.next()){
+                booklists.put(results.getInt("booklist_id"), results.getString("title"));
+            }
+        }catch(SQLException e){
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Tried to get booklist titles");
+        }finally{
+            Database.close(connection, statement, results);
+        }
         return booklists;
     }
 }

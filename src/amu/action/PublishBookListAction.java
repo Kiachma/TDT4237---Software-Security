@@ -37,7 +37,7 @@ class PublishBookListAction implements Action {
             return new ActionResponse(ActionResponseType.FORWARD, "viewCustomer");
         }
         
-        request.setAttribute("booklist", new BookListDAO().getListByID(booklistkey, customer.getId()));
+        request.setAttribute("booklist", new BookListDAO().getListByID(booklistkey));
         return actionresponse;
     }
     
