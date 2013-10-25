@@ -24,7 +24,7 @@ public final class BookListDAO {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet results = null;
-        String query = "INSERT INTO booklist (customer_id, title, description) VALUES(?,?,?)";
+        String query = "INSERT INTO booklist (customer_id, title, description, is_public) VALUES(?,?,?,?)";
         
         try{
             connection = Database.getConnection();
@@ -32,6 +32,7 @@ public final class BookListDAO {
             statement.setInt(1, customer.getId());
             statement.setString(2, booklist.getTitle());
             statement.setString(3, booklist.getDescription());
+            statement.setBoolean(4, false);
             
             if(statement.executeUpdate()>0){
                 return true;
@@ -153,7 +154,7 @@ public final class BookListDAO {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet results = null;
-        String query = "SELECT title, description FROM booklist WHERE booklist_id = ?";
+        String query = "SELECT title, description, is_public FROM booklist WHERE booklist_id = ?";
         
         try{
             connection = Database.getConnection();
@@ -164,6 +165,7 @@ public final class BookListDAO {
             while(results.next()){
                 booklist.setTitle(results.getString("title"));
                 booklist.setDescription(results.getString("description"));
+                booklist.setIspublic(results.getBoolean("is_public"));
             }
         }catch(SQLException e){
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "SQL exception in "+query);
@@ -209,6 +211,28 @@ public final class BookListDAO {
         return booklist;
     }
     
+    public boolean makeBookListPublic(int booklistkey){
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet results = null;
+        String query = "UPDATE booklist SET is_public = ? WHERE booklist_id = ?";
+        
+        try{
+            connection = Database.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setBoolean(1, true);
+            statement.setInt(2, booklistkey);
+            if(statement.executeUpdate()>0){
+                return true;
+            }
+        }catch(SQLException e){
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Exception in query: "+query);
+            e.printStackTrace();
+        }finally{
+            Database.close(connection, statement, results);
+        }
+        return false;
+    }
     /*
      * Fetch titles in DB, return a string list of the titles
      */

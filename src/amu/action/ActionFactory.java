@@ -56,6 +56,7 @@ public class ActionFactory implements ServletContextListener {
         map.put("viewBookList", new ViewBookListAction());
         map.put("addBookList", new AddBookListAction());
         map.put("deleteBookList", new DeleteBookListAction());
+        map.put("publishBookList", new PublishBookListAction());
         
         // Customer support
         map.put("customerSupport", new CustomerSupportAction());
