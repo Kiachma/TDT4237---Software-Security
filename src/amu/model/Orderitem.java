@@ -1,6 +1,6 @@
 package amu.model;
 
-public class Orderitems {
+public class Orderitem {
 
 	private Integer orderItemId;
 	private int orderId;
@@ -10,7 +10,7 @@ public class Orderitems {
 	private int status;
 	
 	
-	public Orderitems(int orderItemId, int orderId, int bookId, int quantity,
+	public Orderitem(int orderItemId, int orderId, int bookId, int quantity,
 			String price, int status) {
 		this.orderItemId = orderItemId;
 		this.orderId = orderId;
@@ -21,7 +21,7 @@ public class Orderitems {
 	}
 
 
-	public Orderitems(int orderId, int bookId, int quantity, String price) {
+	public Orderitem(int orderId, int bookId, int quantity, String price) {
 		this.orderItemId = null;
 		this.orderId = orderId;
 		this.bookId = bookId;
