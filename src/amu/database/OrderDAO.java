@@ -76,7 +76,7 @@ public final class OrderDAO {
             
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-            	int orderId = resultSet.getInt(0);
+            	int orderId = resultSet.getInt(Statement.RETURN_GENERATED_KEYS);
             	//save bought books in db for the order:
             	if (new OrderItemDAO().storeItemsForOrder(
             			orderId, Order.makeOrderitems(orderId, cartObjects))) {
