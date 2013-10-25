@@ -16,7 +16,7 @@ public class Order {
     private String value;
     private int status;
     
-    // TODO: Add OrderItems
+    // TODO: Implement OrderItems as part of orders
 
     public Order(int id, Customer customer, Address address, Calendar createdDate, String value, int status) {
         this.id = id;
@@ -61,7 +61,11 @@ public class Order {
     }
     
     public String getStatusText() {
-        switch (status)
+        return Order.getStatusText(this.status);
+    }
+    
+    public static String getStatusText(int status) {
+    	switch (status)
         {
             case ORDER_DELIVERED: 
                 return "Delivered";
