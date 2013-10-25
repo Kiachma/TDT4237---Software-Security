@@ -61,36 +61,36 @@ public final class OrderDAO {
 	return orders;
     }
 
-    public boolean add(Order order, Map<String, CartItem> cartObjects) {
+ public boolean add(Order order, Map<String, CartItem> cartObjects) {
 
-	try {
-	    connection = Database.getConnection();
+        try {
+            connection = Database.getConnection();
 
-	    String query = "INSERT INTO `order` (customer_id, address_id, created, value, status) VALUES (?, ?, CURDATE(), ?, ?)";
-	    statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-	    statement.setInt(1, order.getCustomer().getId());
-	    statement.setInt(2, order.getAddress().getId());
-	    statement.setBigDecimal(3, new BigDecimal(order.getValue()));
-	    statement.setInt(4, order.getStatus());
-	    statement.executeUpdate();
+            String query = "INSERT INTO `order` (customer_id, address_id, created, value, status) VALUES (?, ?, CURDATE(), ?, ?)";
+            statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, order.getCustomer().getId());
+            statement.setInt(2, order.getAddress().getId());
+            statement.setBigDecimal(3, new BigDecimal(order.getValue()));
+            statement.setInt(4, order.getStatus());
+            statement.executeUpdate();
+            
+            resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+            	int orderId = resultSet.getInt(Statement.RETURN_GENERATED_KEYS);
+            	//save bought books in db for the order:
+            	if (new OrderItemDAO().storeItemsForOrder(
+            			orderId, Order.makeOrderItems(orderId, cartObjects))) {
+            		return true;
+            	}
+            	
+            }
+        } catch (SQLException exception) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, exception);
+        } finally {
+            Database.close(connection, statement, resultSet);
+        }
 
-	    resultSet = statement.getGeneratedKeys();
-	    if (resultSet.next()) {
-		int orderId = resultSet.getInt(1);
-		//save bought books in db for the order:
-		if (new OrderItemDAO().storeItemsForOrder(
-			orderId, Order.makeOrderitems(orderId, cartObjects))) {
-		    return true;
-		}
-
-	    }
-	} catch (SQLException exception) {
-	    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, exception);
-	} finally {
-	    Database.close(connection, statement, resultSet);
-	}
-
-	return false;
+        return false;
     }
 
     public Order findById(int id) {

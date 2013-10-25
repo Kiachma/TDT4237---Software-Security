@@ -1,7 +1,9 @@
 package amu.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ public class Order {
         this.value = value;
         this.status = status;
         this.orderItems = orderItems;
+        updateOrderCost();
     }
 
     public Order(Customer customer, Address address, String subtotal) {
@@ -42,7 +45,7 @@ public class Order {
         this.status = ORDER_PENDING;
     }
     
-    public void addOrderitem(OrderItem item) {
+    public void addOrderItem(OrderItem item) {
     	if (orderItems == null) {
     		orderItems = new ArrayList<OrderItem>();
     	}
@@ -51,6 +54,49 @@ public class Order {
     		throw new IllegalArgumentException("Can't add item belonging to another order:" + item.getOrderId());
     	}
     	orderItems.add(item);
+    }
+    
+    /**
+     * Update total cost of order based on its orderitems
+     */
+    public void updateOrderCost() {
+    	if (orderItems == null || orderItems.isEmpty()) {
+    		return;
+    	}
+    	
+    	float total = (float) 0.0;
+    	for (OrderItem item : orderItems) {
+    		float price = Float.parseFloat(item.getPrice());
+    		total += price * item.getQuantity();
+    	}
+    	value = "" + total;
+    }
+    
+    /**
+     * Get a minimal booklist by combining modifier orders with the original
+     * Note that order_item_ids will be removed, as these won't exist in the database
+     * for the modified versions.
+     * Should be used for parent orders only.
+     * @return list with each book occurring max one time
+     */
+    public List<OrderItem> condenseOrderItems() {
+    	if (orderItems == null || orderItems.isEmpty()) {
+    		throw new IllegalStateException("No list or no entries to condense");
+    	}
+    	List<OrderItem> compressed = new ArrayList<OrderItem>();
+    	Map<Integer, OrderItem> temp = new HashMap<Integer, OrderItem>();
+    	
+    	for (OrderItem item : orderItems) {
+    		int bId = item.getBook().getId();
+    		if (temp.containsKey(bId)) {
+    			temp.get(bId).setQuantity(
+    					temp.get(bId).getQuantity() + item.getQuantity());
+    		} else {
+    			temp.put(bId, item);
+    		}
+    	}
+    	compressed.addAll(temp.values());
+    	return compressed;
     }
     
     public List<OrderItem> getOrderItems() {
@@ -100,7 +146,7 @@ public class Order {
         }
     }
 
-	public static List<OrderItem> makeOrderitems(
+	public static List<OrderItem> makeOrderItems(
 			int orderId, Map<String, CartItem> cartObjects) {
 		if (orderId < 0) {
 			throw new IllegalArgumentException("Invalid order id: can't be negative");
