@@ -31,13 +31,13 @@ class PublishBookListAction implements Action {
             actionResponse.addParameter("from", "viewBookList");
             return actionResponse;
         }
-        request.setAttribute("booklist", new BookListDAO().getListByID(booklistkey, customer.getId()));
         
         BookListDAO booklistDAO = new BookListDAO();
         if(!booklistDAO.makeBookListPublic(booklistkey)){
             return new ActionResponse(ActionResponseType.FORWARD, "viewCustomer");
         }
         
+        request.setAttribute("booklist", new BookListDAO().getListByID(booklistkey, customer.getId()));
         return actionresponse;
     }
     
