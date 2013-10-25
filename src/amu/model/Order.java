@@ -1,6 +1,5 @@
 package amu.model;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -35,7 +34,6 @@ public class Order {
 	this.status = status;
 	this.orderItems = orderItems;
 	updateOrderCost();
-	generateItemMap();
     }
 
     public Order(Customer customer, Address address, String subtotal) {
@@ -89,7 +87,8 @@ public class Order {
 	for (OrderItem item : orderItems) {
 	    int bId = item.getBook().getId();
 	    if (temp.containsKey(bId)) {
-		temp.get(bId).setQuantity( temp.get(bId).getQuantity() + item.getQuantity());
+		OrderItem orderItem = new OrderItem(item.getBook(),  temp.get(bId).getQuantity() + item.getQuantity(), item.getPrice());
+		temp.put(bId, orderItem);
 	    } else {
 		temp.put(bId, item);
 	    }
@@ -162,13 +161,6 @@ public class Order {
 	return items;
     }
 
-    private void generateItemMap() {
-	itemMap = new HashMap<>();
-	for (OrderItem item : getCondenseOrderItems()) {
-	    itemMap.put(item.getOrderItemId(), item);
-	}
-    }
-
     public HashMap<Integer, OrderItem> getItemMap() {
 	return itemMap;
     }
@@ -187,6 +179,16 @@ public class Order {
 
     public void setValue(String toString) {
 	this.value = toString;
+    }
+    
+    public int getBookSum(int id){
+	int sum =0;
+	for(OrderItem item : orderItems){
+	    if(item.getBook().getId()==id){
+		sum=sum+item.getQuantity();
+	    }
+	}
+	return sum;
     }
 
 }

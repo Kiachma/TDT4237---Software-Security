@@ -45,7 +45,7 @@
 			</td>
 			<td>
 			    <div style="margin-bottom:0px" class="form-group">
-				<input type="text" class="form-control input-sm" name="quantity_${orderitem.orderItemId}" id="quantity_{orderitem.orderItemId}" value="${orderitem.quantity}">
+				<input type="text" class="form-control input-sm" name="quantity_${orderitem.book.id}" id="quantity_{orderitem.orderItemId}" value="${orderitem.quantity}">
 			      </div>
 
 			</td>
