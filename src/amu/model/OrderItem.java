@@ -1,30 +1,30 @@
 package amu.model;
 
-public class Orderitem {
+public class OrderItem {
 
 	private Integer orderItemId;
 	private int orderId;
-	private int bookId;
+	private Book book;
 	private int quantity;
 	private String price;
 	private int status;
 	
 	
-	public Orderitem(int orderItemId, int orderId, int bookId, int quantity,
+	public OrderItem(int orderItemId, int orderId, Book book, int quantity,
 			String price, int status) {
 		this.orderItemId = orderItemId;
 		this.orderId = orderId;
-		this.bookId = bookId;
+		this.book = book;
 		this.quantity = quantity;
 		this.price = price;
 		this.status = status;
 	}
 
 
-	public Orderitem(int orderId, int bookId, int quantity, String price) {
+	public OrderItem(int orderId, Book book, int quantity, String price) {
 		this.orderItemId = null;
 		this.orderId = orderId;
-		this.bookId = bookId;
+		this.book = book;
 		this.quantity = quantity;
 		this.price = price;
 		//TODO: Consider if individual items can be plucked/shipped and order status
@@ -43,8 +43,8 @@ public class Orderitem {
 	}
 
 
-	public int getBookId() {
-		return bookId;
+	public Book getBook() {
+		return book;
 	}
 
 
@@ -64,6 +64,10 @@ public class Orderitem {
 	
 	public String getStatusText() {
 		return Order.getStatusText(status);
+	}
+	
+	public float getTotalPrice(){
+	    return quantity*Float.valueOf(price);
 	}
 	
 }

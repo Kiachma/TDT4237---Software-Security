@@ -19,11 +19,11 @@ public class Order {
     private String value;
     private int status;
     
-    private List<Orderitem> orderItems;
+    private List<OrderItem> orderItems;
     
     // TODO: Implement OrderItems as part of orders
 
-    public Order(int id, Customer customer, Address address, Calendar createdDate, String value, int status, List<Orderitem> orderItems) {
+    public Order(int id, Customer customer, Address address, Calendar createdDate, String value, int status, List<OrderItem> orderItems) {
         this.id = id;
         this.customer = customer;
         this.address = address;
@@ -42,9 +42,9 @@ public class Order {
         this.status = ORDER_PENDING;
     }
     
-    public void addOrderitem(Orderitem item) {
+    public void addOrderitem(OrderItem item) {
     	if (orderItems == null) {
-    		orderItems = new ArrayList<Orderitem>();
+    		orderItems = new ArrayList<OrderItem>();
     	}
     	
     	if (item.getOrderId() != id) {
@@ -53,7 +53,7 @@ public class Order {
     	orderItems.add(item);
     }
     
-    public List<Orderitem> getOrderitems() {
+    public List<OrderItem> getOrderItems() {
     	return orderItems;
     }
 
@@ -100,7 +100,7 @@ public class Order {
         }
     }
 
-	public static List<Orderitem> makeOrderitems(
+	public static List<OrderItem> makeOrderitems(
 			int orderId, Map<String, CartItem> cartObjects) {
 		if (orderId < 0) {
 			throw new IllegalArgumentException("Invalid order id: can't be negative");
@@ -108,12 +108,12 @@ public class Order {
 			throw new IllegalArgumentException("No items to add!");
 		}
 		
-		List<Orderitem> items = new ArrayList<Orderitem>();
+		List<OrderItem> items = new ArrayList<OrderItem>();
 		for (CartItem i : cartObjects.values()) {
 			Book book = i.getBook();
 			int quantity = i.getQuantity();
 			String price = "" + book.getPrice();
-			items.add(new Orderitem(orderId, book.getId(), quantity, price));
+			items.add(new OrderItem(orderId, book, quantity, price));
 		}
 		return items;
 	}
