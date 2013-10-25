@@ -9,6 +9,7 @@ public class BookList {
     public String description;
     public List<BookListItem> books;
     public int id;
+    public boolean ispublic;
 
     public List getBooks() {
         return books;
@@ -50,6 +51,14 @@ public class BookList {
     
     public int getID(){
         return this.id;
+    }
+
+    public boolean getIspublic(){
+        return this.ispublic;
+    }
+    
+    public void setIspublic(boolean ispublic){
+        this.ispublic = ispublic;
     }
 
     @Override
