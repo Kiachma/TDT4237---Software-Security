@@ -93,4 +93,32 @@ public class OrderItemDAO {
 
 	return true;
     }
+
+    public boolean add(OrderItem item) {
+	Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = Database.getConnection();
+
+            String query = "INSERT INTO order_items (order_id, book_id, quantity, price,status) VALUES (?, ?, ?, ?, ?)";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, item.getOrderId());
+            statement.setInt(2, item.getBook().getId());
+            statement.setInt(3, item.getQuantity());
+            statement.setString(4, item.getPrice());
+	    statement.setInt(5, item.getStatus());
+
+            if (statement.executeUpdate() > 0) {
+                return true;
+            }
+        } catch (SQLException exception) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, exception);
+        } finally {
+            Database.close(connection, statement, resultSet);
+        }
+
+        return false;
+    }
 }

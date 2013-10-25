@@ -132,4 +132,39 @@ public final class OrderDAO {
 	return order;
     }
 
+    public boolean updateOrder(Order order, List<OrderItem> newItems) {
+	try {
+            connection = Database.getConnection();
+	    OrderItemDAO orderItemDAO = new OrderItemDAO();
+            String query = "INSERT INTO `order` (customer_id, address_id, created, value, status,parent) VALUES (?, ?, CURDATE(), ?, ?,?)";
+            statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, order.getCustomer().getId());
+            statement.setInt(2, order.getAddress().getId());
+            statement.setBigDecimal(3, new BigDecimal(order.getValue()));
+            statement.setInt(4, order.getStatus());
+	    statement.setInt(5, order.getParent());
+            statement.executeUpdate();
+            
+            resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+            	int orderId = resultSet.getInt(Statement.RETURN_GENERATED_KEYS);
+            	//save bought books in db for the order:
+            	for(OrderItem item : newItems){
+		    
+		    item.setOrderId(orderId);
+		    orderItemDAO.add(item);
+		    
+		}
+		return true;
+            	
+            }
+        } catch (SQLException exception) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, exception);
+        } finally {
+            Database.close(connection, statement, resultSet);
+        }
+
+        return false;
+    }
+
 }

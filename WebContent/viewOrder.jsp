@@ -1,7 +1,9 @@
 <div class="container">
     <h1>Order options</h1>
     <div>Order id: <c:out value="${order.id}"/></div>
-    <form class="form-inline" role="form" method="post">
+    <form class="form-inline" role="form" action="updateOrder.do" method="post">
+	<input type="hidden" name="order_id" value="${order.id}" />
+	<input type="hidden" name="address_id" value="${order.address.id}" />
 	<table class="table table-striped table-bordered table-condensed">
 	    <t:head>
 		<tr>
@@ -27,7 +29,7 @@
 	    </t:head>
 	    <t:body>
 
-		<c:forEach var="orderitem" items="${order.orderItems}" varStatus="counter">
+		<c:forEach var="orderitem" items="${order.condenseOrderItems}" varStatus="counter">
 		    <tr>
 			<td>
 			    ${orderitem.book.title.name}
@@ -43,7 +45,7 @@
 			</td>
 			<td>
 			    <div style="margin-bottom:0px" class="form-group">
-				<input type="text" class="form-control input-sm" name="quantity_${orderitem.orderItemId}" id="quantity_${orderitem.orderItemId}" value="${orderitem.quantity}">
+				<input type="text" class="form-control input-sm" name="quantity_${orderitem.orderItemId}" id="quantity_{orderitem.orderItemId}" value="${orderitem.quantity}">
 			      </div>
 
 			</td>
@@ -60,7 +62,7 @@
 
 	    </t:body>
 	</table>
-	<button type="button" class="pull-right btn btn-default">Update</button>
+	<input class="pull-right btn btn-default" type="submit" value="Update" />
     </form>
    
 </div>
