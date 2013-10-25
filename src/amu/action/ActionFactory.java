@@ -67,6 +67,8 @@ public class ActionFactory implements ServletContextListener {
         map.put("addReview", new AddReviewAction());
 	map.put("rateReview", new RateReviewAction());
 
+	map.put("viewOrder", new ViewOrderAction());
+	map.put("updateOrder", new UpdateOrderAction());
         return Collections.unmodifiableMap(map);
     }
 

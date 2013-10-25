@@ -34,7 +34,7 @@ class PlaceOrderAction implements Action {
         OrderDAO orderDAO = new OrderDAO();
         Order order = new Order(customer, cart.getShippingAddress(), cart.getSubtotal().toString());
         
-        if (orderDAO.add(order))
+        if (orderDAO.add(order, cart.getItems()))
         {
             cart = new Cart();
             session.setAttribute("cart", cart);
