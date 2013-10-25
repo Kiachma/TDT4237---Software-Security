@@ -74,8 +74,12 @@ public final class OrderDAO {
             
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-                // TODO: Add OrderItems
-                return true;
+            	int orderId = resultSet.getInt(0);
+            	//save bought books in db for the order:
+            	if (new OrderItemDAO().storeItemsForOrder(orderId, order.getOrderitems())) {
+            		return true;
+            	}
+            	
             }
         } catch (SQLException exception) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, exception);
