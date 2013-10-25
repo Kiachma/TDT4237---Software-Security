@@ -1,6 +1,8 @@
 package amu.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class Order {
     
@@ -16,15 +18,18 @@ public class Order {
     private String value;
     private int status;
     
+    private List<Orderitem> orderItems;
+    
     // TODO: Implement OrderItems as part of orders
 
-    public Order(int id, Customer customer, Address address, Calendar createdDate, String value, int status) {
+    public Order(int id, Customer customer, Address address, Calendar createdDate, String value, int status, List<Orderitem> orderItems) {
         this.id = id;
         this.customer = customer;
         this.address = address;
         this.createdDate = createdDate;
         this.value = value;
         this.status = status;
+        this.orderItems = orderItems;
     }
 
     public Order(Customer customer, Address address, String subtotal) {
@@ -34,6 +39,21 @@ public class Order {
         this.createdDate = null;
         this.value = subtotal;
         this.status = ORDER_PENDING;
+    }
+    
+    public void addOrderitem(Orderitem item) {
+    	if (orderItems == null) {
+    		orderItems = new ArrayList<Orderitem>();
+    	}
+    	
+    	if (item.getOrderId() != id) {
+    		throw new IllegalArgumentException("Can't add item belonging to another order:" + item.getOrderId());
+    	}
+    	orderItems.add(item);
+    }
+    
+    public List<Orderitem> getOrderitems() {
+    	return orderItems;
     }
 
     public Integer getId() {

@@ -2,6 +2,8 @@ package amu.database;
 
 import amu.model.Customer;
 import amu.model.Order;
+import amu.model.Orderitem;
+
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,21 +27,28 @@ public final class OrderDAO {
 
         try {
             connection = Database.getConnection();
-            String query = "SELECT * FROM `order` WHERE customer_id=?";
+            //select only main orders
+            String query = "SELECT * FROM `order` WHERE customer_id=? AND parent IS NULL";
             statement = connection.prepareStatement(query);
             statement.setInt(1, customer.getId());
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                AddressDAO addressDAO = new AddressDAO();
-                Calendar createdDate = Calendar.getInstance();
-                createdDate.setTime(resultSet.getDate("created"));
-                orders.add(new Order(resultSet.getInt("id"),
+            	AddressDAO addressDAO = new AddressDAO();
+            	OrderItemDAO orderitemDAO = new OrderItemDAO();
+            	Calendar createdDate = Calendar.getInstance();
+
+            	createdDate.setTime(resultSet.getDate("created"));
+            	int orderId = resultSet.getInt("id");
+            	//get all items from the order and any suborders:
+            	List<Orderitem> orderItems = orderitemDAO.getItemsForMainOrder(orderId);
+				orders.add(new Order(orderId,
                         customer, 
                         addressDAO.read(resultSet.getInt("address_id")), 
                         createdDate, 
                         resultSet.getString("value"), 
-                        resultSet.getInt("status")));
+                        resultSet.getInt("status"),
+                        orderItems));
             }
         } catch (SQLException exception) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, exception);
