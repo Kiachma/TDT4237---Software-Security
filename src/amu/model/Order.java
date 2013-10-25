@@ -2,6 +2,7 @@ package amu.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,33 @@ public class Order {
     		throw new IllegalArgumentException("Can't add item belonging to another order:" + item.getOrderId());
     	}
     	orderItems.add(item);
+    }
+    
+    /**
+     * Get a minimal booklist by combining modifier orders with the original
+     * Note that order_item_ids will be removed, as these won't exist in the database
+     * for the modified versions.
+     * Should be used for parent orders only.
+     * @return list with each book occurring max one time
+     */
+    public List<Orderitem> condenseOrderitems() {
+    	if (orderItems == null || orderItems.isEmpty()) {
+    		throw new IllegalStateException("No list or no entries to condense");
+    	}
+    	List<Orderitem> compressed = new ArrayList<Orderitem>();
+    	Map<Integer, Orderitem> temp = new HashMap<Integer, Orderitem>();
+    	
+    	for (Orderitem item : orderItems) {
+    		int bId = item.getBookId();
+    		if (temp.containsKey(bId)) {
+    			temp.get(bId).setQuantity(
+    					temp.get(bId).getQuantity() + item.getQuantity());
+    		} else {
+    			temp.put(bId, item);
+    		}
+    	}
+    	compressed.addAll(temp.values());
+    	return compressed;
     }
     
     public List<Orderitem> getOrderitems() {
