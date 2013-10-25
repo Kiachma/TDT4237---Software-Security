@@ -1,5 +1,6 @@
 package amu.database;
 
+import amu.model.CartItem;
 import amu.model.Customer;
 import amu.model.Order;
 import amu.model.Orderitem;
@@ -13,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,7 +61,7 @@ public final class OrderDAO {
         return orders;
     }
     
-        public boolean add(Order order) {
+        public boolean add(Order order, Map<String, CartItem> cartObjects) {
 
         try {
             connection = Database.getConnection();
@@ -76,7 +78,8 @@ public final class OrderDAO {
             if (resultSet.next()) {
             	int orderId = resultSet.getInt(0);
             	//save bought books in db for the order:
-            	if (new OrderItemDAO().storeItemsForOrder(orderId, order.getOrderitems())) {
+            	if (new OrderItemDAO().storeItemsForOrder(
+            			orderId, Order.makeOrderitems(orderId, cartObjects))) {
             		return true;
             	}
             	

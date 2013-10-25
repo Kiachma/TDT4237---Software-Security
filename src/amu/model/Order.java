@@ -3,6 +3,7 @@ package amu.model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 public class Order {
     
@@ -98,5 +99,23 @@ public class Order {
                 return "Canceled";
         }
     }
+
+	public static List<Orderitem> makeOrderitems(
+			int orderId, Map<String, CartItem> cartObjects) {
+		if (orderId < 0) {
+			throw new IllegalArgumentException("Invalid order id: can't be negative");
+		} else if (cartObjects == null || cartObjects.isEmpty()) {
+			throw new IllegalArgumentException("No items to add!");
+		}
+		
+		List<Orderitem> items = new ArrayList<Orderitem>();
+		for (CartItem i : cartObjects.values()) {
+			Book book = i.getBook();
+			int quantity = i.getQuantity();
+			String price = "" + book.getPrice();
+			items.add(new Orderitem(orderId, book.getId(), quantity, price));
+		}
+		return items;
+	}
     
 }
