@@ -83,7 +83,7 @@ public class DeleteBookListAction implements Action{
             ActionResponse actionresponse = new ActionResponse(ActionResponseType.REDIRECT, "viewCustomer");
             return actionresponse;
         }
-        request.setAttribute("booklist", booklistDAO.getListByID(booklistID, customer.getId()));
+        request.setAttribute("booklist", booklistDAO.getListByID(booklistID));
         return new ActionResponse(ActionResponseType.FORWARD, "deleteBookList");
     }
 }

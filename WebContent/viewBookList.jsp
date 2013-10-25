@@ -23,7 +23,11 @@
 
     
     <br>
-    <div><a href="publishBookList.do?booklistkey=${booklistkey}">PUBLISH LIST</a></div>
-    <br>
-    <div><a href="deleteBookList.do?booklistkey=${booklistkey}">DELETE LIST</a></div>
+    <c:choose>
+        <c:when test="${booklist.customerID == customer.id}">
+            <div><a href="publishBookList.do?booklistkey=${booklistkey}">PUBLISH LIST</a></div>
+            <br>
+            <div><a href="deleteBookList.do?booklistkey=${booklistkey}">DELETE LIST</a></div> 
+        </c:when>
+    </c:choose>
 </div>

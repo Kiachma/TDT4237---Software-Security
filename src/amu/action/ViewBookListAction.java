@@ -17,11 +17,6 @@ class ViewBookListAction implements Action{
         HttpSession session = request.getSession(true);
         Customer customer = (Customer) session.getAttribute("customer");
 
-        if (customer == null) {
-            ActionResponse actionResponse = new ActionResponse(ActionResponseType.REDIRECT, "loginCustomer");
-            actionResponse.addParameter("from", "viewBookList");
-            return actionResponse;
-        }
         
         BookListDAO booklistDAO = new BookListDAO();
         int booklistID = Integer.parseInt(request.getParameter("id"));
@@ -30,14 +25,21 @@ class ViewBookListAction implements Action{
         String delete_isbn = null;
         delete_isbn = request.getParameter("delete_isbn");
         System.out.println(delete_isbn);
-        if(delete_isbn!=null){
-            int title_id = new BookDAO().findByISBN(delete_isbn).getTitle().getId();
-            booklistDAO.removeBookFromList(title_id, booklistID);
-        }
-        BookList booklist = booklistDAO.getListByID(booklistID, customer.getId());
+        BookList booklist = booklistDAO.getListByID(booklistID);
         if(booklist!= null){
             request.setAttribute("booklist", booklist);
             request.setAttribute("booklistkey", booklistID);
+            if(!booklist.getIspublic()){
+                if (customer == null) {
+                    ActionResponse actionResponse = new ActionResponse(ActionResponseType.REDIRECT, "loginCustomer");
+                    actionResponse.addParameter("from", "viewBookList");
+                    return actionResponse;
+                }
+            }
+        }
+        if(delete_isbn!=null){
+            int title_id = new BookDAO().findByISBN(delete_isbn).getTitle().getId();
+            booklistDAO.removeBookFromList(title_id, booklistID);
         }
         
         return new ActionResponse(ActionResponseType.FORWARD, "viewBookList");
