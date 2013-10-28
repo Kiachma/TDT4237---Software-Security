@@ -4,7 +4,7 @@
     <div>
         <div>Credit card number: <c:out value="${creditCard.maskedCreditCardNumber}"/></div>
         <div>Expiry date: <fmt:formatDate value="${creditCard.expiryDate.time}" type="date" dateStyle="short" /></div>
-        <div>Cardholder's name: <c:out value="${creditCard.cardholderName}"></div>
+        <div>Cardholder's name: <c:out value="${creditCard.cardholderName}"/></div>
     </div>
     <form action="deleteCreditCard.do" method="post">
         <c:if test="${not empty messages}">

@@ -1,8 +1,8 @@
 package amu.model;
 
-import java.math.BigDecimal;
 import java.util.Calendar;
-import org.jasypt.util.text.StrongTextEncryptor;
+
+import org.jasypt.util.text.BasicTextEncryptor;
 
 public class CreditCard {
 
@@ -67,16 +67,14 @@ public class CreditCard {
     }
     
     private String encryptCCNumber(String ccNumber){
-	
-	StrongTextEncryptor decimalNumberEncryptor = new StrongTextEncryptor();
-	decimalNumberEncryptor.setPassword(getCustomer().getPassword());
+    	BasicTextEncryptor decimalNumberEncryptor = new BasicTextEncryptor();
+    	decimalNumberEncryptor.setPassword(getCustomer().getPassword());
 	return decimalNumberEncryptor.encrypt(ccNumber);
     } 
     
     private String decryptCCNumber(String ccNumber){
-	
-	StrongTextEncryptor decimalNumberEncryptor = new StrongTextEncryptor();
-	decimalNumberEncryptor.setPassword(getCustomer().getPassword());
+    	BasicTextEncryptor decimalNumberEncryptor = new BasicTextEncryptor();
+    	decimalNumberEncryptor.setPassword(getCustomer().getPassword());
 	return decimalNumberEncryptor.decrypt(ccNumber);
     }
 
